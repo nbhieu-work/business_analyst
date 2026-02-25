@@ -96,34 +96,6 @@
 - **When** I choose to link Kakao Plus Friend
 - **Then** I am directed to the Kakao interface to add the channel.
 
-### Corporate Management
-**Title:** Corporate CRUD (Admin/System)
-**As an** Administrator,
-**I want to** create, read, update, and delete corporate entities,
-**So that** B2B clients can be managed on the platform.
-**Acceptance Criteria:**
-- **Given** I am on the Admin Corporate Management page
-- **When** I perform CRUD actions
-- **Then** the corporate records are updated accurately.
-
-**Title:** User-Corporate Mapping CRUD (Admin/System)
-**As an** Administrator,
-**I want to** link users to specific corporate entities (CRUD),
-**So that** employees are correctly associated with their companies.
-**Acceptance Criteria:**
-- **Given** I am managing a user or corporate profile
-- **When** I add or modify a mapping
-- **Then** the relationship is saved and reflects the user's corporate affiliation.
-
-**Title:** Corporate Information Migration/Deduplication
-**As a** System,
-**I want to** automatically merge user-entered corporate names with existing corporate records if they refer to the same entity but have slight text variations,
-**So that** duplicate corporate records are not created.
-**Acceptance Criteria:**
-- **Given** a B2C user enters their corporate name during registration
-- **When** the name closely matches or is an alias of an existing corporate record
-- **Then** the user is mapped to the existing corporate record rather than creating a new one.
-
 ### Main Page
 **Title:** Additional Agreement Popup for New Terms
 **As a** User,
@@ -135,15 +107,46 @@
 - **Then** a popup appears requiring my consent for the new terms.
 **Notes/Technical Considerations:** Requires verification logic to check the user's agreement status against the latest terms version.
 
-### Vehicle Management
-**Title:** User Vehicle CRUD
+### Vehicle & Affiliate Company Management
+**Title:** Unified "Manage Your Vehicles" List View
 **As a** User,
-**I want to** add, view, edit, and delete my vehicle information,
-**So that** my vehicle details are tracked accurately by the platform.
-**AcceptanceCriteria:**
-- **Given** I am on the vehicle management page
-- **When** I submit vehicle details or modifications
-- **Then** the vehicle information is saved to my profile.
+**I want to** view a single consolidated list of all my registered vehicles,
+**So that** I can easily see each vehicle, its associated affiliate company (if any), and its active plans.
+
+**Acceptance Criteria:**
+- **Given** I navigate to the "Manage Your Vehicles" menu
+- **When** the page loads
+- **Then** a list is displayed showing each vehicle's details.
+- **And** if a vehicle belongs to an affiliate company, the company name is displayed alongside it.
+- **And** if a vehicle does not belong to a company, the company field is left empty.
+- **And** any active plans tied to the vehicle are clearly visible.
+
+**Title:** Register New Vehicle with Optional Affiliate Company
+**As a** User,
+**I want to** register a new vehicle and optionally link it to an affiliate company,
+**So that** my vehicle is tracked and the company association is recorded simultaneously.
+
+**Acceptance Criteria:**
+- **Given** I am on the "Add Vehicle" screen within the "Manage Your Vehicles" menu
+- **When** I enter the vehicle details
+- **And** I optionally input or select an affiliate company name
+- **Then** the vehicle is successfully saved to my profile.
+- **And** if a company was provided, it is linked to this specific vehicle.
+
+**Notes/Technical Considerations:**
+This establishes the business rule: Affiliate companies only exist as an attribute or relation tied directly to a vehicle. An affiliate company cannot exist in the system without at least one associated vehicle.
+
+**Title:** Edit/Delete Vehicle & Affiliate Company Link
+**As a** User,
+**I want to** modify a vehicle's details, change/remove its affiliate company, or delete the vehicle entirely,
+**So that** my records remain accurate over time.
+
+**Acceptance Criteria:**
+- **Given** I select a specific vehicle from the "Manage Your Vehicles" list
+- **When** I update the vehicle information or change the affiliate company
+- **Then** the updates are saved immediately.
+- **When** I choose to delete the vehicle
+- **Then** the vehicle is removed from my list, and if it was the only vehicle linked to a specific affiliate company, that company association is also removed/archived.
 
 **Title:** Endorsement Email Notification upon Vehicle Change
 **As a** System,
@@ -418,7 +421,20 @@
 - **When** I click "Download Excel"
 - **Then** an Excel file containing the filtered user information is generated and downloaded.
 
-*(Note: Admin CRUD functions for Terms, User Terms Agreement History, Corporate, User-Corporate Mapping, Corporate Migration, and User Vehicles are covered by the core user stories in the User Module.)*
+**Title:** Manage User Vehicles and Affiliate Companies (Admin)
+**As an** Administrator,
+**I want to** view, add, edit, or delete vehicles and their associated affiliate companies for a specific user,
+**So that** I can provide customer support and ensure data accuracy.
+**Acceptance Criteria:**
+- **Given** I am viewing a specific user's detailed profile in the Admin portal
+- **When** I navigate to the user's "Vehicles" section
+- **Then** I see a consolidated list of their vehicles, affiliate companies, and active plans.
+- **When** I choose to edit a vehicle or its affiliate company name
+- **Then** the updates are saved and reflected in the user's profile.
+- **When** I add or delete a vehicle for the user
+- **Then** the system enforces the business rule that the affiliate company association is tied directly to the vehicle record.
+
+*(Note: Admin CRUD functions for Terms, User Terms Agreement History, and User Vehicle/Affiliate Company Data are integrated within the detailed admin management interfaces.)*
 
 ### Alimtalk (Notification) Management
 **Title:** Aligo Token Management (Generate/Save/Modify)
