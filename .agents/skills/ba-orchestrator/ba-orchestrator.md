@@ -113,7 +113,6 @@ In CHANGE REQUEST MODE, the input SHOULD include (if not present, infer and mark
 ## 00A_CHANGELOG.md Template (MANDATORY)
 Create if missing, update on every baseline and CR.
 
-```markdown
 # <FEATURE_CODE> — Change Log
 
 ## Current Version
@@ -139,7 +138,6 @@ Create if missing, update on every baseline and CR.
   - 05A_TECH_SPEC_PATCH_CR-01_v1.1.md (if any)
 - **Git reference:** <commit hash or PR link if available>
 - **Notes/Decisions:** ...
-```
 
 ---
 
@@ -277,7 +275,7 @@ In CHANGE REQUEST MODE:
 ---
 
 ## Step 5B — 04B_IMPACT_ANALYSIS_CR-XX_vX.Y.md (Only if Medium/High impact)
-```markdown id="gpossj"
+
 # Impact Analysis — <FEATURE_CODE> — CR-XX — vX.Y
 **Date:** YYYY-MM-DD  
 **Impact level:** Low | Medium | High
@@ -298,7 +296,6 @@ In CHANGE REQUEST MODE:
 
 ## Regression scope (must test)
 - ...
-```
 
 ---
 
@@ -340,7 +337,7 @@ In CHANGE REQUEST MODE:
 
 ## Step 6A — Patch files for CHANGE REQUEST MODE (generate as needed)
 ### 03A_FEATURE_SPEC_PATCH_CR-XX_vX.Y.md (ALWAYS for CR)
-```markdown id="gp66th"
+
 # Feature Spec Patch — <FEATURE_CODE> — CR-XX — vX.Y
 **Date:** YYYY-MM-DD  
 **Requested by:** <name/team>  
@@ -365,10 +362,10 @@ In CHANGE REQUEST MODE:
 ## Dev action checklist
 - [ ] Update implementation for ...
 - [ ] Update tests for ...
-```
+
 
 ### 05A_TECH_SPEC_PATCH_CR-XX_vX.Y.md (ONLY if tech impacted)
-```markdown id="jqvp16"
+
 # Tech Spec Patch — <FEATURE_CODE> — CR-XX — vX.Y
 **Date:** YYYY-MM-DD  
 
@@ -390,7 +387,7 @@ In CHANGE REQUEST MODE:
 - [ ] Update backend...
 - [ ] Update frontend...
 - [ ] Regression tests...
-```
+
 
 ---
 
