@@ -122,10 +122,10 @@ Create if missing, update on every baseline and CR.
 - **Baseline source:** (ticket/epic/link)
 
 ## Change Requests
-### CR-01 — YYYY-MM-DD — <Short title>
+### CR-01 — YYYY-MM-DD — Short title
 - **Version:** v1.1
-- **Requested by:** <name/team>
-- **Reason:** <why>
+- **Requested by:** name/team
+- **Reason:** why
 - **Summary of changes:**
   - ...
 - **Impacted files:**
@@ -136,7 +136,7 @@ Create if missing, update on every baseline and CR.
   - 03A_FEATURE_SPEC_PATCH_CR-01_v1.1.md
   - 04B_IMPACT_ANALYSIS_CR-01_v1.1.md (if any)
   - 05A_TECH_SPEC_PATCH_CR-01_v1.1.md (if any)
-- **Git reference:** <commit hash or PR link if available>
+- **Git reference:** commit hash or PR link if available
 - **Notes/Decisions:** ...
 
 ---
@@ -340,23 +340,23 @@ In CHANGE REQUEST MODE:
 
 # Feature Spec Patch — <FEATURE_CODE> — CR-XX — vX.Y
 **Date:** YYYY-MM-DD  
-**Requested by:** <name/team>  
-**Reason:** <why>
+**Requested by:** name/team  
+**Reason:** why
 
 ## What changed (Summary)
 - ...
 
 ## Spec sections changed
-- **Section:** <heading/path>
-  - **Before:** <1–3 bullets or short excerpt>
-  - **After:** <1–3 bullets or short excerpt>
+- **Section:** heading/path
+  - **Before:** 1–3 bullets or short excerpt
+  - **After:** 1–3 bullets or short excerpt
 
 ## Impacted items
 - User Stories: US-xx...
 - Business Rules: BR-xx...
 - Edge Cases: EC-xx...
 - Data Elements: DE-xx...
-- State model: <status/transition>
+- State model: status/transition
 - NFR: NFR-xx...
 
 ## Dev action checklist
@@ -374,9 +374,9 @@ In CHANGE REQUEST MODE:
 
 ## Contract changes
 - Endpoints impacted:
-  - <METHOD> <PATH> — change: ...
+  - METHOD PATH — change: ...
 - Schema changes:
-  - <field>: before → after
+  - field: before → after
 - Error codes changes:
   - ...
 
