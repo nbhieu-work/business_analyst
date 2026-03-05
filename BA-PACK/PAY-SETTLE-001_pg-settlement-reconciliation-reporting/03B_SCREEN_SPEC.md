@@ -7,6 +7,10 @@
 |---|---|---|---|---|---|---|
 | SCR-01 | Settlement Dashboard | Dashboard/List | Finance Operator | Admin Menu > Settlements | Excel Download (Async), Recon Action | US-01, US-02, US-03 |
 | SCR-02 | Audit Log Viewer | List | Auditor | Admin Menu > Audit Logs | None | US-04 |
+| SCR-03 | Settlement Record Detail | Detail | Finance Operator | SCR-01 (click row) | SCR-05 (view case) | US-02 |
+| SCR-04 | Payout Detail | Detail | Finance Operator | SCR-03 (view payout) | - | US-02 |
+| SCR-05 | Reconciliation Case Detail | Detail/Compare | Finance Operator | SCR-01, SCR-03 | - | US-02 |
+| SCR-06 | Collection Run Detail | Detail | Admin, Operator | SCR-01 (job history) | Retry action | US-01 |
 
 ---
 
@@ -130,3 +134,181 @@
 
 #### H. Design Notes
 - Keep it dense and utilitarian. Monospace fonts for UUIDs, IP addresses, and JSON blobs are recommended.
+
+---
+
+### SCR-03 — Settlement Record Detail
+**Purpose:** View the detailed information of a specific internal settlement record, its matched status, and related transactions.  
+**Primary Actor:** Finance Operator  
+**Related Stories:** US-02  
+**Permissions:** 
+- `ALLOWED`: Admin, Finance Operator, Auditor
+- `DENIED`: Regular Users, Drivers
+**Entry Conditions:** User clicked a row on SCR-01  
+**Exit Conditions:** User navigates back to Dashboard or clicks to view Case Detail (SCR-05)  
+
+#### A. Layout / Sections (functional)
+- **Header:** Back button, Title (Internal ID), Status Badge
+- **Summary Section:** PG Amount, Internal Amount, Discrepancy Amount
+- **Transaction Details:** Order details from internal DB
+- **PG Match Details:** Link to view Payout Detail (SCR-04) or Case Detail (SCR-05)
+
+#### B. Components & Data Binding
+| Component | Type | Data Source (DE / API) | Rules/Validation | Visibility/Role | Notes |
+|---|---|---|---|---|---|
+| Status Badge | Badge | `reconcile_status` | - | All allowed roles | - |
+| Amounts Summary | Key-Value | `amount_internal`, `amount_pg` | - | All allowed roles | - |
+| PG Match Link | Link | `pg_tid` | - | All allowed roles | Navigates to SCR-04/05 |
+
+#### C. User Interactions
+- **Click "View Compare/Case":** Navigates to SCR-05 to compare internal vs PG data.
+- **Click PG TID:** Navigates to SCR-04 to see raw PG payout details.
+
+#### D. States
+- **Loading State:** Skeleton loaders for summary and details.
+- **Error State:** "Failed to load record details." + Retry button.
+
+#### E. Validations & Error Messages
+- N/A (Read-only detail view)
+
+#### F. Analytics / Audit Events
+| Event | Trigger | Properties |
+|---|---|---|
+| `ui.settlement_detail_viewed` | Page Load | userId, internalId |
+
+#### G. Edge Cases to Handle
+- **Missing PG Record:** If status is `PENDING_PG_SETTLEMENT`, the PG match link should be disabled/hidden.
+
+#### H. Design Notes
+- Use a 2-column layout for desktop to show Internal Details left, PG Match summary right.
+
+---
+
+### SCR-04 — Payout Detail
+**Purpose:** Display the raw, detailed payload received from the PG provider for a specific payout ID / TID.  
+**Primary Actor:** Finance Operator  
+**Related Stories:** US-02  
+**Permissions:** 
+- `ALLOWED`: Admin, Finance Operator, Auditor
+- `DENIED`: Regular Users, Drivers
+**Entry Conditions:** User clicked a PG TID from SCR-01 or SCR-03  
+**Exit Conditions:** User navigates back  
+
+#### A. Layout / Sections (functional)
+- **Header:** Back button, Title (PG TID context)
+- **Raw Data Viewer:** Key-value list of all fields directly mapped from the PG integration adapter.
+
+#### B. Components & Data Binding
+| Component | Type | Data Source (DE / API) | Rules/Validation | Visibility/Role | Notes |
+|---|---|---|---|---|---|
+| Property List | Key-Value | PG Ingestion DB | - | All allowed roles | Show exactly what PG sent |
+
+#### C. User Interactions
+- **Copy to Clipboard:** Icon next to raw JSON or TID to easily copy for auditing.
+
+#### D. States
+- **Loading State:** Skeleton loader.
+- **Error State:** "Unable to fetch raw PG payload."
+
+#### E. Validations & Error Messages
+- N/A
+
+#### F. Analytics / Audit Events
+- N/A (General payload view)
+
+#### G. Edge Cases to Handle
+- **Raw Payload Missing:** If data wasn't fully ingested, show "Raw payload unavailable."
+
+#### H. Design Notes
+- Format JSON payloads or long strings clearly.
+
+---
+
+### SCR-05 — Reconciliation Case Detail
+**Purpose:** Provide a side-by-side comparison (diff view) of the Internal DB Order vs the PG Settlement Record to easily spot discrepancies (e.g., amount mismatch, fee difference).  
+**Primary Actor:** Finance Operator  
+**Related Stories:** US-02  
+**Permissions:** 
+- `ALLOWED`: Admin, Finance Operator, Auditor
+- `DENIED`: Regular Users, Drivers
+**Entry Conditions:** User clicks a mismatched row from SCR-01 or from SCR-03  
+**Exit Conditions:** User resolves case (future scope) or navigates back  
+
+#### A. Layout / Sections (functional)
+- **Header:** Title ("Reconciliation Compare"), Status Badge
+- **Split View:** Left Column (Internal Data), Right Column (PG Data)
+- **Delta Summary:** Highlight exact fields that mismatch (e.g., Amount Expected vs Received)
+
+#### B. Components & Data Binding
+| Component | Type | Data Source (DE / API) | Rules/Validation | Visibility/Role | Notes |
+|---|---|---|---|---|---|
+| Split Comparison | Table/Grid | Internal DB + PG Adapter | Highlight diffs | All allowed roles | - |
+| Delta Highlight | Text/Icon | Calculated difference | Only show if >0 | All allowed roles | - |
+
+#### C. User Interactions
+- **Navigations:** Links to original internal order.
+
+#### D. States
+- **Loading State:** Skeleton split view.
+- **Empty State:** N/A
+
+#### E. Validations & Error Messages
+- N/A
+
+#### F. Analytics / Audit Events
+| Event | Trigger | Properties |
+|---|---|---|
+| `ui.recon_case_viewed` | Page Load | userId, pg_tid, internal_tid |
+
+#### G. Edge Cases to Handle
+- **Missing Side:** If record is missing in Internal DB, the left side shows "No matching internal record found."
+- **Missing Side:** If missing in PG, right side shows "No PG record found."
+
+#### H. Design Notes
+- Use visual diffing patterns (e.g., red background for mis-matching values).
+
+---
+
+### SCR-06 — Collection Run Detail
+**Purpose:** View the history, status, and logs of a specific PG data ingestion or reconciliation background job.  
+**Primary Actor:** Admin, Finance Operator  
+**Related Stories:** US-01  
+**Permissions:** 
+- `ALLOWED`: Admin, Finance Operator
+- `DENIED`: Auditor, Regular Users, Drivers
+**Entry Conditions:** User clicks a "View Jobs" or a specific job link from SCR-01  
+**Exit Conditions:** User triggers a retry, navigates back  
+
+#### A. Layout / Sections (functional)
+- **Header:** Job ID, Date Range targeted, Job Status (COMPLETED, FAILED, PROCESSING)
+- **Metrics:** Total records processed, Total Matched, Total Mismatched, Total Errors
+- **Error Log Console:** List of system/parsing errors encountered during ingestion
+- **Actions:** "Retry Job" button (if failed)
+
+#### B. Components & Data Binding
+| Component | Type | Data Source (DE / API) | Rules/Validation | Visibility/Role | Notes |
+|---|---|---|---|---|---|
+| "Retry Job" | Button | `POST /job/{id}/retry` | Only active if FAILED | Admin, Operator | - |
+| Metrics Grid | Number Cards| Job Statistics DB | - | Admin, Operator | - |
+| Error Logs | List/Text | Job Worker Logs | - | Admin, Operator | - |
+
+#### C. User Interactions
+- **Click "Retry Job":** Shows confirmation. If confirmed, triggers job restart.
+
+#### D. States
+- **Loading State:** Skeleton.
+- **Processing State:** Auto-refreshing metrics (polling or WebSocket).
+
+#### E. Validations & Error Messages
+- N/A
+
+#### F. Analytics / Audit Events
+| Event | Trigger | Properties |
+|---|---|---|
+| `ui.collection_job_retry` | "Retry Job" confirmed | userId, jobId |
+
+#### G. Edge Cases to Handle
+- **Continuous Failure:** If retry fails repeatedly, surface clear system error message (e.g., "SFTP Auth Error") for admins.
+
+#### H. Design Notes
+- Code blocks or terminal-style UI for raw error logs.
