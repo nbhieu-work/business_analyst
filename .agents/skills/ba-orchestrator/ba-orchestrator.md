@@ -33,6 +33,7 @@ All outputs live under:
 - `01_RESEARCH.md`
 - `02_EXTRACTION.md`
 - `03_FEATURE_SPEC.md`
+- `03B_SCREEN_SPEC.md`
 - `04_QUALITY_GATE.md`
 - `05_TECH_SPEC.md`
 - `06_DEV_HANDOFF_PACK.md`
@@ -236,6 +237,27 @@ Output file: `03_FEATURE_SPEC.md` (normalize to include these items even if the 
 - Open Questions carried forward
 - Traceability table: `US ↔ BR/EC/DE/NFR`
 
+## Step 4B — 03B_SCREEN_SPEC.md (Delegate to `screen-specification`)
+**MUST activate and follow skill `screen-specification` for this stage.  
+Do not produce `03B_SCREEN_SPEC.md` without applying the skill.**
+
+Inputs:
+- `00_INTAKE.md`
+- `02_EXTRACTION.md`
+- `03_FEATURE_SPEC.md`
+
+Output file: `03B_SCREEN_SPEC.md` must include:
+- Screen Inventory (SCR-xx)
+- Detailed screen specs per SCR with:
+  - layout/sections (functional)
+  - component + data binding table
+  - interactions
+  - states (loading/empty/error/permission denied)
+  - validations/messages
+  - analytics/audit events
+  - edge cases handling
+- Traceability: Screen ↔ US/DE/EC
+
 ---
 
 ## Step 5 — 04_QUALITY_GATE.md (Orchestrator writes)
@@ -252,6 +274,7 @@ Checklist categories (each must be PASS/WARN/FAIL with notes):
 8. Consistency (terminology/IDs stable across docs)
 9. Dependencies & risks identified
 10. Open questions manageable (<=10, prioritized)
+11. Screen coverage & UI states completeness (SCR-xx + loading/empty/error/permission)
 
 Overall:
 - **PASSED** only if no FAIL items.
@@ -417,10 +440,11 @@ In CHANGE REQUEST MODE:
 3) Step 2 — Generate `01_RESEARCH.md` via `deep-research`
 4) Step 3 — Write `02_EXTRACTION.md`
 5) Step 4 — Generate `03_FEATURE_SPEC.md` via `feature-specification`
-6) Step 5 — Write `04_QUALITY_GATE.md` (and `04B` if needed)
-7) Step 6 — If PASSED, generate/refresh `05_TECH_SPEC.md` via `specification-writing`
-8) Step 6A — If CR mode, generate patch files (`03A`, optionally `05A`)
-9) Step 7 — Write `06_DEV_HANDOFF_PACK.md`
+6) Step 4B - Generate `03B_SCREEN_SPEC.md` via `screen-specification`
+7) Step 5 — Write `04_QUALITY_GATE.md` (and `04B` if needed)
+8) Step 6 — If PASSED, generate/refresh `05_TECH_SPEC.md` via `specification-writing`
+9) Step 6A — If CR mode, generate patch files (`03A`, optionally `05A`)
+10) Step 7 — Write `06_DEV_HANDOFF_PACK.md`
 
 ---
 
