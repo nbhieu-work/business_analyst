@@ -8,7 +8,7 @@ description: |
   Enforces standardized output files, traceability IDs, and Change Control Mode C (current + patch + git).
 license: MIT
 metadata:
-  author: hienub
+  author: hieunb
   version: "1.0.0"
 ---
 

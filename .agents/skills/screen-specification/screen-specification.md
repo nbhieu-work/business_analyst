@@ -5,7 +5,7 @@ description: |
   Use when you need a structured screen-by-screen specification: layout, components, fields, states,
   empty/error/loading, interactions, permissions, validations, and copy guidelines.
 metadata:
-  author: hienub
+  author: hieunb
   version: "1.0.0"
 ---
 
@@ -30,7 +30,6 @@ Return a **single markdown document** containing a screen inventory and detailed
 ## Required Output Structure
 Use this template:
 
-```markdown
 # Screen Spec — <FEATURE_CODE> — vX.Y
 **Last updated:** YYYY-MM-DD  
 **Related:** US-xx, BR-xx, DE-xx, NFR-xx  
@@ -42,7 +41,7 @@ Use this template:
 
 ## 2) Screen Details
 
-### SCR-01 — <Screen Name>
+### SCR-01 — <Screen_Name>
 **Purpose:**  
 **Primary Actor:**  
 **Related Stories:** US-xx  
