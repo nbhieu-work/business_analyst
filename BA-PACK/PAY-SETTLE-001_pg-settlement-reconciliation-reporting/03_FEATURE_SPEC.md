@@ -16,6 +16,9 @@ This specification details the initial version of the PG Settlement Reconciliati
 - **US-02 [View Dashboard]:** As an Operator/Auditor, I want to view a dashboard summarizing the reconciliation results (Matched vs Missing vs Mismatch), so that I can quickly gauge the financial health for the period.
 - **US-03 [Download Report]:** As an Operator/Auditor, I want to download the detailed reconciliation list into an Excel file, so that I can perform deeper offline accounting analysis.
 - **US-04 [Audit Tracking]:** As an Admin/Auditor, I want all sensitive actions (Reconciliation Runs, Excel Downloads) logged, so that we comply with financial auditing standards.
+- **US-05 [Register Deposit]:** As a Finance Operator, I want to manually register a Corporate Deposit received in our bank account, so that it enters the system for verification.
+- **US-06 [Search Deposits]:** As an Operator/Admin, I want to search and filter Corporate Deposits by status, date, and depositor name, so that I can find unapplied payments easily.
+- **US-07 [Verify & Apply Deposit]:** As an Operator, I want to link a `RECEIVED` Corporate Deposit to a specific Billing Order/Plan, so that the invoice is cleared and the deposit status transitions to `APPLIED`.
 
 ## Acceptance Criteria
 
@@ -44,6 +47,23 @@ This specification details the initial version of the PG Settlement Reconciliati
 - **When** the Auditor checks the Audit Menu
 - **Then** they see a read-only list showing: User ID, Time, Action ("EXPORT_EXCEL"), target date parameters, and the user's IP Address.
 
+**US-05 [Register Deposit]:**
+- **Given** I am on the Corporate Deposit Management screen
+- **When** I fill in Depositor Name, Amount, and Date, and click "Save"
+- **Then** a new `CorporateDeposit` record is created with status `RECEIVED`.
+
+**US-06 [Search Deposits]:**
+- **Given** I am on the Corporate Deposit Management screen
+- **When** I filter by Status = `RECEIVED`
+- **Then** I see a list of all unapplied deposits.
+
+**US-07 [Verify & Apply Deposit]:**
+- **Given** I select a `RECEIVED` deposit
+- **When** I search for and select an open Invoice ID
+- **Then** the UI shows a comparison of the Invoice Amount vs Deposit Amount.
+- **And** if they match, I can click "Apply to Invoice", transitioning the status to `APPLIED`.
+- **And** if they do not match, the "Apply" button requires an Admin override (EC-05).
+
 ## Flows
 - **Export Async Flow:** Dashboard -> Click Export -> UI shows toast "Export queued" -> Worker creates Excel -> Uploads to S3/Cloud Storage -> Saves URL to user's Notification box -> User clicks notification -> Download triggers.
 
@@ -54,3 +74,6 @@ This specification details the initial version of the PG Settlement Reconciliati
 | US-02 | BR-02 | | NFR-03 |
 | US-03 | BR-02, BR-03 | EC-04 | NFR-02 |
 | US-04 | BR-03 | | |
+| US-05 | BR-05 | | NFR-03 |
+| US-06 | | | |
+| US-07 | BR-06 | EC-05 | NFR-03 |

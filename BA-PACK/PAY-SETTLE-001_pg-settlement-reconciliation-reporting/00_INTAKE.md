@@ -11,7 +11,8 @@ The operations and administration teams need a dedicated Payment/Settlement (정
 ## B. Goals & Success Metrics
 - Successfully collect/ingest PG settlement records.
 - Accurately reconcile PG actual payout details against internal transaction/order data.
-- Provide a dashboard/reporting view for settlement statuses.
+- Manage manual Corporate Deposit records (입금 내역) and verification against specific plans/invoices.
+- Provide a dashboard/reporting view for settlement statuses and corporate deposits.
 - Support Excel downloads for offline analysis and auditing.
 - Maintain an audit trail for all reconciliation actions and exports.
 
@@ -21,7 +22,7 @@ The operations and administration teams need a dedicated Payment/Settlement (정
 - **Auditor:** Read-only access to view settlement reports and audit trails.
 
 ## D. Scope In / Scope Out
-- **Scope In:** PG data ingestion pipeline, Reconciliation logic, Settlement Dashboard, Excel Export function, Audit Logging for these actions, Role-based access control (Admin, Operator, Auditor).
+- **Scope In:** PG data ingestion pipeline, Reconciliation logic, Corporate Deposit manual entry/verification workflows, linking deposits to invoices/plans, Settlement Dashboard, Excel Export function, Audit Logging for these actions, Role-based access control (Admin, Operator, Auditor).
 - **Scope Out:** Processing actual refunds or capturing initial payments (this module only reads and reconciles completed transaction data). Adding new PG providers beyond the initial architecture support.
 
 ## E. Constraints
@@ -49,6 +50,8 @@ The operations and administration teams need a dedicated Payment/Settlement (정
 - **PG (Payment Gateway):** External payment processor.
 - **Settlement (정산):** The process of verifying that the funds collected by the PG match the expected payout, minus fees, transferred to the company bank account.
 - **Reconciliation (대사):** Matching internal order records with PG payout line items to find missing, overpaid, or underpaid transactions.
+- **Corporate Deposit (법인 입금):** Manual payments made by corporate entities completely outside the PG ecosystem (e.g., direct wire transfer to company bank account) that require manual registry and validation.
+- **Invoice/Billing Order:** A generated bill for corporate plans that expected a Corporate Deposit for fulfillment.
 
 ## J. Confidence
 - Medium. The business logic is clear and standard for e-commerce/platforms, but the technical specifics (Open Questions 1-4) regarding the exact PG provider, data frequency, and connection method are currently unknown and require technical spikes.

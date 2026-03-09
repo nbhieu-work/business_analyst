@@ -10,8 +10,8 @@ This document specifies the technical architecture for the new PG Settlement Rec
 
 ## Motivation
 Current state -> No automated settlement tracking.
-Problems -> Finance relies on manual Excel VLOOKUPs between PG admin panels and internal DBs; risk of human error; lack of audit trails for financial reviews.
-Desired state -> System automatically matches PG payouts to internal orders based on Transaction ID (TID), highlighting mismatches and providing secure, async Excel exports.
+Problems -> Finance relies on manual Excel VLOOKUPs between PG admin panels and internal DBs; risk of human error; lack of audit trails for financial reviews. Manual bank transfers are completely disconnected from billing plans.
+Desired state -> System automatically matches PG payouts to internal orders based on Transaction ID (TID), highlighting mismatches and providing secure, async Excel exports. Admins can manually log and link corporate deposits directly to invoices/plans.
 
 ## Research Findings
 - Using a chunked, asynchronous worker approach (e.g., Celery/Sidekiq or Spring Batch) is necessary for Excel exports > 10,000 rows to prevent HTTP timeouts.
@@ -55,6 +55,15 @@ Desired state -> System automatically matches PG payouts to internal orders base
 - `GET /api/v1/audit-logs`
   - Query: `?module=SETTLEMENT`
   - Response: `200 OK` (List of audit actions)
+- `POST /api/v1/deposits` (Corporate Deposit)
+  - Body: `{ "depositor_name": "ABC Corp", "amount": 500000, "deposit_date": "YYYY-MM-DD" }`
+  - Response: `201 Created`
+- `GET /api/v1/deposits`
+  - Query: `?status=RECEIVED&page=1...`
+  - Response: `200 OK` (Paginated list)
+- `PUT /api/v1/deposits/{id}/status`
+  - Body: `{ "status": "APPLIED", "invoice_id": "uuid", "force_override": false }`
+  - Response: `200 OK` (Or `400 Bad Request` if `force_override` needed due to amount mismatch).
 
 ## Data Model outline
 - **SettlementReport**
@@ -72,6 +81,13 @@ Desired state -> System automatically matches PG payouts to internal orders base
   - `target_params` (JSONB)
   - `ip_address` (String)
   - `created_at` (Timestamp)
+- **CorporateDeposit**
+  - `id` (UUID, PK)
+  - `depositor_name` (String, Index)
+  - `amount` (Decimal)
+  - `deposit_date` (Date)
+  - `status` (String/Enum)
+  - `linked_invoice_id` (UUID, Nullable, Index)
 
 ## AuthN/AuthZ mapping
 - **Admin**: All Endpoints.
@@ -79,11 +95,11 @@ Desired state -> System automatically matches PG payouts to internal orders base
 - **Auditor**: `GET /settlements`, `POST /export`, `GET /audit-logs` (No `POST /reconcile`).
 
 ## Implementation Plan
-- **Phase 1:** DB Schema creation (SettlementReport, AuditLog) & RBAC setup.
+- **Phase 1:** DB Schema creation (`SettlementReport`, `AuditLog`, `CorporateDeposit`) & RBAC setup.
 - **Phase 2:** Build the generic `ReconciliationService` and the first `PgDataAdapter` (e.g., TossPayments).
-- **Phase 3:** API development (GET/POST endpoints).
+- **Phase 3:** API development (GET/POST endpoints for settlements and corporate deposits).
 - **Phase 4:** Background Job implementations (Reconciliation Job + Excel Export Job).
-- **Phase 5:** Frontend Dashboard UI.
+- **Phase 5:** Frontend Dashboard UI & Corporate Deposit Management UI.
 
 ## Edge Cases
 - **EC-04:** Background job failures (e.g., S3 upload fails for Excel) must mark the job status as `FAILED` and notify the user to retry.

@@ -11,6 +11,7 @@
 | SCR-04 | Payout Detail | Detail | Finance Operator | SCR-03 (view payout) | - | US-02 |
 | SCR-05 | Reconciliation Case Detail | Detail/Compare | Finance Operator | SCR-01, SCR-03 | - | US-02 |
 | SCR-06 | Collection Run Detail | Detail | Admin, Operator | SCR-01 (job history) | Retry action | US-01 |
+| SCR-07 | Corporate Deposit Management | List/Action | Finance Operator | Admin Menu > Plan | Apply to Invoice | US-05, US-06, US-07 |
 
 ---
 
@@ -312,3 +313,56 @@
 
 #### H. Design Notes
 - Code blocks or terminal-style UI for raw error logs.
+
+---
+
+### SCR-07 — Corporate Deposit Management
+**Purpose:** Allow Finance Operators to manually register bank transfer deposits from corporate clients and link them to unpaid invoices/plans.  
+**Primary Actor:** Finance Operator, Admin  
+**Related Stories:** US-05, US-06, US-07  
+**Permissions:** 
+- `ALLOWED`: Admin, Finance Operator (Admin required for overrides)
+- `DENIED`: Auditor (Read-only list), Regular Users
+**Entry Conditions:** Admin Menu > Plan > Corporate Deposits  
+**Exit Conditions:** -
+
+#### A. Layout / Sections (functional)
+- **Header:** Title ("Corporate Deposits") + "Register Deposit" button.
+- **Filters:** Date Range, Status Dropdown (RECEIVED, VERIFIED, APPLIED), Depositor Name Search.
+- **Content Area:** Data table displaying the list of `CorporateDeposit` records.
+- **Sidebar/Modal:** "Apply to Plan" workflow panel (opens when clicking a row).
+
+#### B. Components & Data Binding
+| Component | Type | Data Source (DE / API) | Rules/Validation | Visibility/Role | Notes |
+|---|---|---|---|---|---|
+| "Register Deposit" | Button / Modal | `POST /deposits` | Form: Name, Amount, Date | Admin, Operator | - |
+| Data Table | Table | `CorporateDeposit` list | Paginated | All | - |
+| ↳ Col: Date | Date | `deposit_date` | - | All | - |
+| ↳ Col: Depositor | Text | `depositor_name` | - | All | - |
+| ↳ Col: Amount | Currency | `amount` | - | All | Format as KRW |
+| ↳ Col: Status | Badge | `status` | Color coded by enum | All | RECEIVED(Warning), APPLIED(Success) |
+| "Link to Invoice" | Button | `PUT /deposits/{id}` | Only if status != APPLIED | Admin, Operator | Opens linking panel |
+
+#### C. User Interactions
+- **Register Deposit:** Opens a modal. After submitting, row is added to the table with `RECEIVED` status.
+- **Link to Invoice:** Select a record, search for a valid Invoice ID. System previews the Invoice Amount vs Deposit Amount.
+- **Confirm Apply:** Click "Apply". If amounts match, transitions to `APPLIED`.
+
+#### D. States
+- **Loading State:** Skeleton table rows.
+- **Error State:** N/A.
+
+#### E. Validations & Error Messages
+- **Amount mismatch (EC-05):** If Invoice Amount != Deposit Amount, show error: "Amounts do not match. Only Admins can force-apply partial or over-payments." Admin sees an "Override & Apply" (Red) button.
+
+#### F. Analytics / Audit Events
+| Event | Trigger | Properties |
+|---|---|---|
+| `ui.deposit_registered` | Modal Submit | userId, amount |
+| `ui.deposit_applied` | Click Apply | userId, depositId, invoiceId, is_override |
+
+#### G. Edge Cases to Handle
+- **Duplicate Deposit Warning:** If registering a deposit with the exact same Name, Amount, and Date as an existing one, show a warning before saving: "A similar deposit already exists. Are you sure?"
+
+#### H. Design Notes
+- Link/Apply Workflow: Preferred as a right-side sliding drawer (side-sheet) so the user doesn't lose the context of the main list while searching for matching invoices.

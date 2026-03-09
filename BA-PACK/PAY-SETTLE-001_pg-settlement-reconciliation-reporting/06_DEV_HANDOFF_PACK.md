@@ -6,10 +6,10 @@ Change request: N/A
 # Dev Handoff Pack
 
 ## A. TL;DR
-Build a new PG Settlement Reconciliation module. This system reads PG payout data, matches it against our internal order transactions (via `pg_tid`), flags discrepancies (missing records, amount mismatches), and provides a Dashboard with an asynchronous Excel export feature.
+Build a new PG Settlement Reconciliation module. This system reads PG payout data, matches it against our internal order transactions (via `pg_tid`), flags discrepancies (missing records, amount mismatches), and provides a Dashboard with an asynchronous Excel export feature. Additionally, it provides a manual entry interface for tracking and applying Corporate Deposits offline to system invoices.
 
 ## B. In-scope / Out-of-scope
-- **In-scope:** Async Reconciliation Engine, Settlement Dashboard APIs, Async Excel Export generation, Audit Logging table and APIs.
+- **In-scope:** Async Reconciliation Engine, Settlement Dashboard APIs, Async Excel Export generation, Audit Logging table and APIs, Corporate Deposit CRUD endpoints, Invoice Linking logic.
 - **Out-scope:** Automatically triggering or executing refunds based on the mismatches (this is purely a reporting/reconciliation tool).
 
 ## C. Key assumptions + decisions
@@ -22,17 +22,20 @@ Build a new PG Settlement Reconciliation module. This system reads PG payout dat
 - **US-02:** Operator/Auditor views the paginated dashboard showing status sums and mismatch flags.
 - **US-03:** Operator/Auditor exports the specific view to Excel asynchronously.
 - **US-04:** Admin/Auditor views the Audit Log of who triggered what.
+- **US-05/06/07:** Operator registers a manual Corporate Deposit, searches them, and safely links them to unpaid Invoices via the UI.
 
 ## E. Endpoints summary
 - `POST /api/v1/settlements/reconcile` (Async 202)
 - `GET /api/v1/settlements` (Paginated 200)
 - `POST /api/v1/settlements/export` (Async 202)
 - `GET /api/v1/audit-logs` (Paginated 200)
+- `POST /api/v1/deposits` (Create Corp Deposit 201)
+- `PUT /api/v1/deposits/{id}/status` (Apply to Invoice 200)
 
 ## F. Data fields summary (Top elements)
 - `SettlementReport.reconcile_status`: The core output flag (`MATCHED`, `MISSING_INTERNAL`, `PENDING_PG_SETTLEMENT`, `AMOUNT_MISMATCH`).
 - `SettlementReport.pg_tid`: The foreign key linking PG worlds to internal worlds.
-- `AuditLog.action_type`: E.g., `EXPORT_EXCEL`.
+- `CorporateDeposit.status`: Lifecycle tracking (`RECEIVED`, `VERIFIED`, `APPLIED`).
 
 ## G. State transitions summary
 - Async Jobs: `PENDING` -> `PROCESSING` -> `COMPLETED` | `FAILED`
@@ -45,6 +48,7 @@ Build a new PG Settlement Reconciliation module. This system reads PG payout dat
 ## I. Test checklist
 - [ ] Unit Test: Create an internal order for 10,000 KRW, mock PG data for 9,000 KRW -> Assert status `AMOUNT_MISMATCH`.
 - [ ] Integration Test: Request Excel export -> Assert 202 Accepted -> Assert Worker creates file and saves URL.
+- [ ] Integration Test: Operator attempts `PUT /deposits/{id}` to link a 5M KRW deposit to a 4M KRW invoice -> Assert `400 Bad Request` unless `force_override=true` by Admin.
 - [ ] Security Test: Auditor attempts `POST /reconcile` -> Assert 403 Forbidden.
 
 ## J. Open questions for sprint planning
