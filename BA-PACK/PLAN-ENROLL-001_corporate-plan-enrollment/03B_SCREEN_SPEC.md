@@ -34,6 +34,9 @@
 #### C. User Interactions
 - **Click "+ Add Certificate":** Opens the creation modal.
 - **Click a table row:** Opens the right-side detail drawer.
+- **Status Validation Rule:** A Certificate can only be marked as `Active` if:
+  1. A valid Certificate PDF is uploaded.
+  2. The current date falls within the valid Start Date / End Date range.
 
 ---
 
@@ -53,6 +56,7 @@
 - **Form Fields (Right Side):**
   - **User List Upload:** Drag & Drop / Selection box. (Accepts `.xls`, `.xlsx`. Max 100MB). **RULE:** Only 1 file allowed.
   - **Download template:** Link text.
+  - **Certificate PDF Upload:** File upload box (Accepts `.pdf`). **RULE:** `Required` if Status == `Active`. `Optional` if Status == `Inactive`.
   - **Date Pickers:** Start Date, End Date (YYYY-MM-DD).
   - **Date-Time Pickers:** Enroll Start At, Enroll End At (YYYY-MM-DD HH:mm).
 - **Footer:** "Cancel" button, "Create Certificate" button.
@@ -70,7 +74,7 @@
    - **Check Plan Mapping:**
      - If User ID already has this Plan -> Skip assignment (avoid duplicates).
      - If User ID does NOT have this Plan -> Assign Plan. (Status: Pending Activation).
-   - **Activate & Notify:** Link the uploaded PDF/Certificate to the corporate group. Activate the plan for these users. Send notification via Kakao/Email.
+   - **Activate:** Link the uploaded PDF/Certificate to the corporate group. Activate the plan for these users.
 6. **Success State:** Green toast notification "Certificate added!" appears at the bottom.
 
 ---
@@ -82,11 +86,14 @@
 
 #### A. Layout / Sections (functional)
 - **Header:** Certificate No + Status Dropdown Badge ("Active"/"Inactive") + Close (x) and Nav (< >).
+  - **Validation Note:** The dropdown allows changing the status to `Active` **only if** a Certificate PDF exists (uploaded via the Certificate File tab) and the current date is within the defined Start/End Date range. Otherwise, display an error toast.
 - **Tabs:** "General information", "Certificate File", "Renewal History".
 - **Tab: General Information (Read-only Top Box):** Plan Name, Plan Type, Total Covered Users (Count).
 - **Tab: General Information (Editable Form):** Certificate No, Insurance Company, Member Type, Corporate Name, Certificate Status.
 - **Tab: General Information (File List):** Uploaded User List file link (`Filename.xls` -> "Click to download").
 - **Tab: General Information (Dates):** Start/End Dates, Enroll Dates, Created at/Updated at.
+- **Tab: Certificate File (Dedicated Tab):** Area to view/upload/replace the official Certificate PDF file.
+- **Tab: Renewal History:** List/Table tracking historical enrollments or policy updates over time.
 - **Footer:** "Delete" (Red), "Reset", "Update" (Primary).
 
 #### C. User Interactions
