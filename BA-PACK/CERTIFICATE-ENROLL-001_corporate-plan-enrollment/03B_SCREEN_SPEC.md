@@ -1,5 +1,5 @@
 # Screen Spec — CERTIFICATE-ENROLL-001 — v1.0
-**Last updated:** 2026-03-17  
+**Last updated:** 2026-03-19  
 **Related:** BA-Orchestrator, Bulk Mapping Flow
 
 ## 1) Screen Inventory
@@ -71,9 +71,10 @@
    - **Check User Existence (Excel):**
      - If User exists in system -> Use existing User ID.
      - If User does NOT exist -> Auto-create new User Account based on Excel data (Phone/Name).
-   - **Check Plan Mapping:**
-     - If User ID already has this Plan -> Skip assignment (avoid duplicates).
-     - If User ID does NOT have this Plan -> Assign Plan. (Status: Pending Activation).
+    - **Check Plan Mapping (by Vehicle & Plan Type):**
+      - **Rule:** A vehicle can have multiple plans of different types, but only ONE plan per Plan Type.
+      - If the **Vehicle** (mapped to the User in Excel) already has an active plan of the **same Plan Type** as the selected Plan -> Skip assignment for that vehicle.
+      - If the **Vehicle** does NOT have a plan of this Plan Type -> Assign the new Plan. (Status: Pending Activation).
    - **Activate:** Link the uploaded PDF/Certificate to the corporate group. Activate the plan for these users.
 6. **Success State:** Green toast notification "Certificate added!" appears at the bottom.
 
