@@ -50,7 +50,10 @@
 - **Header:** Title "Add Notification Type" + Close (X) icon.
 - **Form Fields:**
   - **Type Name:** Text input. _Placeholder: "e.g., Payment Completed"_
-  - **Trigger/Event Key:** Text input. _Placeholder: "e.g., Payment Completed"_ - (**Validation:** Must be unique, UPPERCASE with underscores commonly used).
+  - **Notification Category:** Radio buttons. Options: `Event-driven (System)` vs `Broadcast (Campaign)`.
+    - **Rule:** If `Event-driven` is selected -> Show **Trigger/Event Key**.
+    - **Rule:** If `Broadcast` is selected -> Hide **Trigger/Event Key** (since it will be triggered by scheduling, not code).
+  - **Trigger/Event Key:** Text input. _Placeholder: "e.g., PAYMENT_SUCCESS"_ - (**Validation:** Must be unique, UPPERCASE with underscores commonly used).
   - **Description:** Textarea. _Placeholder: "Brief description (optional - for internal admin)"_
 - **Footer Buttons:** `Cancel` (Secondary), `Create` (Primary Black).
 
@@ -105,7 +108,8 @@
 
 - **ELIGIBILITY (Define who can receive this notification):**
   - **Target Audience:** Radio buttons -> `All users` vs `Specific Users`.
-    - *Dependency:* If `Specific Users` is chosen, display an Upload container: "Select file" button (Accepts `.xlsx` or `.xls`. Max 100MB).
+    - *Dependency 1:* If `Specific Users` is chosen, display an Upload container: "Select file" button (Accepts `.xlsx` or `.xls`. Max 100MB).
+    - *Dependency 2 (CRITICAL):* The entire Target Audience section (including Excel upload) is **ONLY visible if Notification Category == `Broadcast (Campaign)`**. If `Event-driven`, hide this section (the target is automatically defined by the event payload).
   - **Only active users:** Master Toggle Switch (ON/OFF).
     - *Hint:* "Users who haven't logged in for 30+ days will not receive this notification".
 
