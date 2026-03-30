@@ -88,11 +88,8 @@
   4. **Recurring schedule:** Send on a repeating schedule.
 
 **Dynamic SCHEDULE SETTING sections:**
-- **If `Relative schedule` is selected:**
-  - **Max wait time:** Input field (e.g., `1.5`) alongside a unit Dropdown (e.g., `minutes`, `hours`).
-  - *Hint text:* "If queue is busy, still attempt to send within this timeframe".
-- **If `Fixed date/time` is selected:**
-  - **Fixed Date & Time Configuration:** Combined Date/Time picker (e.g., `2026-01-12 | 12:00`).
+- **If `Send immediately` is selected:**
+  - Notification will be sent immediately after the event is triggered.
 - **If `Recurring schedule` is selected:**
   - **Frequency:** Radio buttons (`Daily`, `Weekly`, `Monthly`).
   - **Send time:** Time input field (HH:MM).
@@ -103,7 +100,7 @@
 
 ---
 
-#### C. Tab: Sending Rules
+#### C. Tab: Sending Rules (CHỈ CẦN LÀM UI, CHƯA CẦN LÀM BACKEND)
 **Purpose:** Restrict or refine *who* gets the notification and *how often* they can be spammed.
 
 - **ELIGIBILITY (Define who can receive this notification):**
