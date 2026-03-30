@@ -1,127 +1,135 @@
 # Screen Spec — NOTIFICATION-001 — v1.0
-**Last updated:** 2026-03-30
-**Related:** US-Notification Management, BR-Notification Setup
+**Cập nhật lần cuối:** 2026-03-30
+**Liên quan:** US-Notification Management, BR-Notification Setup
 
-## 1) Screen Inventory
+## 1) Screen Inventory (Danh sách màn hình)
 | Screen ID | Screen Name | Type | Primary Actor | Entry Points | Exit Points |
 |---|---|---|---|---|---|
 | SCR-01 | Notification Type List | List | Administrator | Admin Sidebar > Notification management | -> SCR-02, -> SCR-03 |
-| SCR-02 | Add Notification Type | Modal | Administrator | SCR-01 ("+ Add Types") | -> SCR-01 |
-| SCR-03 | Notification Type Details | Side-panel / Drawer | Administrator | SCR-01 (Click row or Edit) | -> SCR-01 |
+| SCR-02 | Add Notification Type | Modal | Administrator | SCR-01 (Nút "+ Add Types") | -> SCR-01 |
+| SCR-03 | Notification Type Details | Side-panel / Drawer | Administrator | SCR-01 (Click vào dòng hoặc chữ Edit) | -> SCR-01 |
 
 ---
 
-## 2) Screen Details
+## 2) Screen Details (Chi tiết màn hình)
 
 ### SCR-01 — Notification Type List
-**Purpose:** Manage and view all notification types configured in the system.  
-**Primary Actor:** Administrator  
-**Entry Conditions:** Navigate to Admin > Notification management.
+**Purpose (Mục đích):** Quản lý và xem toàn bộ danh sách các loại thông báo (Notification Types) đã cài đặt trên hệ thống.  
+**Primary Actor:** Quản trị viên (Admin)
+**Entry Conditions:** Truy cập vào menu Admin > Notification management.
 
-#### A. Layout / Sections (functional)
-- **Breadcrumb/Header:** "Notification / Notification Type" with total count badge (e.g., `24`).
-- **Toolbar:** `+ Add Types` button (black) and `Search Notification Type` input field.
-- **Filter Tabs:** `ALL`, `ON`, `OFF`.
-- **Content Area:** Paginated Data table (e.g., Rows per page dropdown: 30, pagination controls).
-  - **Columns:**
-    - No
-    - Notification Type Name (Clickable link, e.g., "Change status")
-    - Trigger (Event key, e.g., `CHANGE_STT`)
-    - Description
-    - Status (Badge: `ON`/`OFF` with a dropdown arrow for inline toggling)
-    - Create at (YYYY-MM-DD)
-    - Update at (YYYY-MM-DD)
-    - Action `Edit` text link.
+#### A. Bố cục / Các thành phần (Chức năng)
+- **Breadcrumb/Header:** Tiêu đề "Notification / Notification Type" kèm theo badge hiển thị tổng số lượng (ví dụ: `24`).
+- **Toolbar:** Nút `+ Add Types` (màu đen) và trường nhập liệu (input field) `Search Notification Type`.
+- **Filter Tabs:** Các tab lọc trạng thái `ALL`, `ON`, `OFF`.
+- **Content Area:** Bảng dữ liệu (Data table) có phân trang (ví dụ: dropdown chọn Rows per page: 30, và các nút điều hướng phân trang).
+  - **Columns (Các cột phụ trách):**
+    - No (Số thứ tự)
+    - Notification Type Name (Click vào tên để xem chi tiết, ví dụ: "Change status")
+    - Trigger (Event key, ví dụ: `CHANGE_STT`)
+    - Description (Mô tả)
+    - Status (Badge hiển thị trạng thái: `ON`/`OFF` kèm theo icon dropdown để chuyển đổi (toggle) trạng thái nhanh)
+    - Create at (Định dạng YYYY-MM-DD)
+    - Update at (Định dạng YYYY-MM-DD)
+    - Action (Chứa text link `Edit`)
 
-#### B. User Interactions
-- **Search:** Instant search or enter to filter by Type Name or Trigger key.
-- **Filter Tabs:** Click to filter table rows by ON/OFF status.
-- **Click row / "Edit" / Name:** Opens details drawer (SCR-03).
-- **Click "+ Add Types":** Opens Add Modal (SCR-02).
+#### B. User Interactions (Tương tác người dùng)
+- **Search:** Tìm kiếm tức thì (instant search) hoặc nhấn Enter để lọc danh sách theo `Type Name` hoặc `Trigger key`.
+- **Filter Tabs:** Click vào tab để lọc các dòng trong bảng theo trạng thái bảng ON hoặc OFF.
+- **Click row / "Edit" / Name:** Mở Drawer xem chi tiết phía bên phải màn hình (SCR-03).
+- **Click "+ Add Types":** Mở Modal thêm mới (SCR-02).
 
 ---
 
 ### SCR-02 — Add Notification Type
-**Purpose:** Create a new notification type foundational block (Name, Trigger Key).  
-**Primary Actor:** Administrator  
+**Purpose (Mục đích):** Tạo một loại thông báo mới bao gồm các thông tin nền tảng (Tên, Mã kích hoạt, Phân loại).  
+**Primary Actor:** Quản trị viên (Admin)
 
-#### A. Layout / Sections (functional)
-- **Component:** Centered Modal Pop-up.
-- **Header:** Title "Add Notification Type" + Close (X) icon.
-- **Form Fields:**
+#### A. Bố cục / Các thành phần (Chức năng)
+- **Component:** Pop-up Modal hiển thị chính giữa màn hình.
+- **Header:** Tiêu đề "Add Notification Type" + icon Đóng (X).
+- **Form Fields (Các trường nhập liệu):**
   - **Type Name:** Text input. _Placeholder: "e.g., Payment Completed"_
-  - **Notification Category:** Radio buttons. Options: `Event-driven (System)` vs `Broadcast (Campaign)`.
-    - **Rule:** If `Event-driven` is selected -> Show **Trigger/Event Key**.
-    - **Rule:** If `Broadcast` is selected -> Hide **Trigger/Event Key** (since it will be triggered by scheduling, not code).
-  - **Trigger/Event Key:** Text input. _Placeholder: "e.g., PAYMENT_SUCCESS"_ - (**Validation:** Must be unique, UPPERCASE with underscores commonly used).
+    - *Purpose (Mục đích):* Tên định danh của loại thông báo, dùng để Admin dễ dàng quản lý và tìm kiếm trên giao diện.
+  - **Notification Category:** Toggle bật/tắt tuỳ chọn: `Event-driven (System)`.
+    - *Purpose (Mục đích):* Phân loại luồng hoạt động. `Event-driven` để phản hồi tự động lại các thao tác của user trên app. Khi tắt dùng cho mục đích CSKH/Marketing gửi hàng loạt theo chiến dịch.
+    - **Rule:** Nếu bật `Event-driven` -> Hiển thị trường **Trigger/Event Key**.
+    - **Rule:** Nếu tắt `Event-driven` -> Ẩn trường **Trigger/Event Key** (vì loại này sẽ được chạy bằng lịch hẹn (scheduling), không chạy bằng mã code).
+  - **Trigger/Event Key:** Dropdown (Dữ liệu được lấy qua Backend API, ví dụ: `/api/notification-triggers`). _Placeholder: "Select a trigger..."_
+    - *Purpose (Mục đích):* Mã khoá kết nối giữa System Code và Hệ thống Thông báo. Khi code phía backend gọi mã này, hệ thống sẽ biết cần bốc đúng template này ra gửi.
+    - **Reasoning:** Do các trigger được code cứng chìm trong logic backend, trường này BẮT BUỘC phải là dạng danh sách sổ xuống (Dropdown) để tránh Admin gõ sai chính tả (typo) và giúp Admin nhận biết được hệ thống đang hỗ trợ những event nào.
   - **Description:** Textarea. _Placeholder: "Brief description (optional - for internal admin)"_
-- **Footer Buttons:** `Cancel` (Secondary), `Create` (Primary Black).
+    - *Purpose (Mục đích):* Ghi chú nội bộ cho các Admin khác hiểu rõ hơn về ngữ cảnh sử dụng của loại thông báo này.
+- **Footer Buttons:** Nút `Cancel` (Secondary), Nút `Create` (Primary Black).
 
 ---
 
 ### SCR-03 — Notification Type Details
-**Purpose:** Comprehensive configuration for a notification type including delivery scheduling, deduplication, rules, and templates.  
-**Primary Actor:** Administrator  
-**Entry Conditions:** Click on a record in SCR-01.
+**Purpose (Mục đích):** Cấu hình toàn diện cho một loại thông báo bao gồm lịch trình gửi đi, luật chống trùng lặp dữ liệu, tập đối tượng và cấu hình chi tiết (templates).  
+**Primary Actor:** Quản trị viên (Admin)
+**Entry Conditions:** Click vào một dòng trong bảng danh sách tại SCR-01.
 
 #### A. Layout (Persistent Drawer Shell)
-- **Component:** Right-side Slide-out Drawer.
-- **Top Bar:** Close (X), Title "Notification Type Details", Next/Prev pagination arrows (`<` `>`).
+- **Component:** Drawer trượt ra từ bên phải màn hình.
+- **Top Bar:** Icon Đóng (X), Tiêu đề "Notification Type Details", Các nút mũi tên chuyển qua lại giữa các record (`<` `>`).
 - **Main Header Profile:**
-  - Name of Notification (e.g., "Change status").
-  - Status Badge: `ON`/`OFF` with dropdown to toggle.
-  - Actions: `Send Test` button (Light Blue), `Edit` button (Primary Blue) to edit basic info.
-- **Tabbed Navigation:**
+  - Tên loại thông báo (Ví dụ: "Change status").
+  - Status Badge: Trạng thái `ON`/`OFF` kèm dropdown để thay đổi nhanh trạng thái bật/tắt.
+  - Các nút hành động: Nút `Send Test` (Xanh nhạt), Nút `Edit` (Xanh đậm - dùng để sửa các thông tin cơ bản).
+- **Tabbed Navigation (Điều hướng qua Tab):**
   - `Template`
-  - `Schedule` (Active in spec)
-  - `Sending Rules` (Active in spec)
+  - `Schedule` (Active trong đặc tả)
+  - `Sending Rules` (Active trong đặc tả)
 
 ---
 
 #### B. Tab: Schedule
-**Purpose:** Determine *when* the notification is triggered and sent.
+**Purpose (Mục đích):** Xác định *khi nào (when)* thông báo sẽ được kích hoạt và gửi đi.
 
-- **SELECT SENDING OPTION (Radio Cards):**
-  1. **Send immediately:** Send as soon as the event is triggered.
-  2. **Relative schedule:** Send after a specified delay from trigger.
-  3. **Fixed date/time:** Send at a specific date and time.
-  4. **Recurring schedule:** Send on a repeating schedule.
+- **SELECT SENDING OPTION (Các thẻ cấu hình Radio):**
+  1. **Send immediately:** Gửi ngay lập tức khi sự kiện được kích hoạt (trigger).
+  2. **Recurring schedule:** Gửi lặp lại theo một lịch trình định kỳ.
 
-**Dynamic SCHEDULE SETTING sections:**
-- **If `Send immediately` is selected:**
-  - Notification will be sent immediately after the event is triggered.
-- **If `Recurring schedule` is selected:**
+**Dynamic SCHEDULE SETTING sections (Khối giao diện biến đổi phụ thuộc vào tùy chọn ở trên):**
+- **Nếu chọn `Send immediately`:**
+  - Thông báo sẽ được đẩy đi ngay mà không có cấu hình độ trễ (delay) nào.
+- **Nếu chọn `Recurring schedule`:**
   - **Frequency:** Radio buttons (`Daily`, `Weekly`, `Monthly`).
-  - **Send time:** Time input field (HH:MM).
-  - **Days of week:** Dropdown selector (e.g., "Custom selection") followed by Day Toggles (`Mon`, `Tue` (inactive), `Wed`, etc.) to choose specific days.
-  - **Start date:** Date picker.
-  - **End date (optional):** Date picker.
-- **Footer Action:** `Schedule Notification` button (Black).
+  - **Send time:** Input nhập khung giờ (HH:MM).
+  - **Days of week:** Dropdown hỗ trợ lấy nhiều giá trị (multi-select) (ví dụ: "Custom selection") bên dưới là các nút Toggles cho từng ngày (`Mon`, `Tue` (ẩn đi), `Wed`, v.v.) để tuỳ chỉnh quy luật lặp lại.
+  - **Start date:** Công cụ Date picker.
+  - **End date (optional):** Công cụ Date picker.
+- **Footer Action:** Nút `Schedule Notification` (Màu Đen).
 
 ---
 
 #### C. Tab: Sending Rules (CHỈ CẦN LÀM UI, CHƯA CẦN LÀM BACKEND)
-**Purpose:** Restrict or refine *who* gets the notification and *how often* they can be spammed.
+**Purpose (Mục đích):** Hạn chế hoặc chọn lọc *ai (who)* sẽ nhận thông báo và *mức độ lặp lại (how often)* để chống spam. Nhằm mục đích bảo vệ trải nghiệm người dùng cuối và tối ưu chi phí gửi tin cho doanh nghiệp.
 
 - **ELIGIBILITY (Define who can receive this notification):**
+  - *Purpose (Mục đích):* Xác định tập đối tượng được phép nhận thông báo, giúp gửi đúng người, tránh lãng phí.
   - **Target Audience:** Radio buttons -> `All users` vs `Specific Users`.
-    - *Dependency 1:* If `Specific Users` is chosen, display an Upload container: "Select file" button (Accepts `.xlsx` or `.xls`. Max 100MB).
-    - *Dependency 2 (CRITICAL):* The entire Target Audience section (including Excel upload) is **ONLY visible if Notification Category == `Broadcast (Campaign)`**. If `Event-driven`, hide this section (the target is automatically defined by the event payload).
-  - **Only active users:** Master Toggle Switch (ON/OFF).
+    - *Dependency 1:* Nếu chọn `Specific Users`, hiển thị một vùng tải lên chứa nút "Select file" (Chỉ chấp nhận file `.xlsx` hoặc `.xls`. Dung lượng tải tối đa 100MB).
+    - *Dependency 2 (CRITICAL - QUAN TRỌNG):* Toàn bộ phần Target Audience này (bao gồm cả chỗ Upload Excel) **CHỈ ĐƯỢC PHÉP HIỂN THỊ nếu biến Notification Category == `Broadcast (Campaign)`**. Nếu loại thông báo là `Event-driven`, bắt buộc phải ẨN đi (vì user mục tiêu sẽ được code backend tự xác định qua payload thông số của sự kiện).
+  - **Only active users:** Switch Toggle chuyển đổi Bật/Tắt (ON/OFF).
+    - *Purpose (Mục đích):* Bộ lọc tự động loại bỏ các tài khoản "ma" hoặc đã gỡ app quá lâu, giúp tiết kiệm triệt để ngân sách SMS/Email (do gửi cho những người này cũng không mang lại chuyển đổi).
     - *Hint:* "Users who haven't logged in for 30+ days will not receive this notification".
 
 - **DEDUPLICATION (Prevent duplicate notifications within a time window):**
+  - *Purpose (Mục đích):* Ngăn chặn lỗi sự cố phần mềm hoặc do thao tác cố ý của user (ví dụ: bấm nút Mua Hàng 2 lần liên tục) gây ra hệ quả gửi ra 2 tin nhắn y hệt nhau tới máy người dùng.
   - **Toggle Switch:** ON/OFF.
-  - **Deduplication strategy (Shown if ON):** Radio options -> `By user + notification type` vs `By user + trigger reference`.
+  - **Deduplication strategy (Chỉ hiển thị nếu bật ON):** Radio options -> `By user + notification type` vs `By user + trigger reference`.
 
 - **RATE LIMITING (Control notification frequency per user):**
+  - *Purpose (Mục đích):* Kiểm soát và giới hạn số lượng tin thông báo tối đa mà 1 cá nhân phải chịu để tránh làm phiền họ liên tục (anti-spam), qua đó duy trì điểm uy tín cao (credibility score) cho hệ thống bắn tin.
   - **Toggle Switch:** ON/OFF.
-  - **Max per day (Shown if ON):** Input block (Hint: "Per user, per 24 hours").
-  - **Max per week (Shown if ON):** Input block (Hint: "Per user, per 7 days").
+  - **Max per day (Chỉ hiển thị nếu bật ON):** Input block (Hint/Gợi ý: "Per user, per 24 hours").
+  - **Max per week (Chỉ hiển thị nếu bật ON):** Input block (Hint/Gợi ý: "Per user, per 7 days").
 
 - **RETRY & FAILURE HANDLING (Automatic retry for failed deliveries):**
+  - *Purpose (Mục đích):* Bảo đảm các loại thông báo quan trọng (ví dụ: tin nhắn mã OTP, Hoá đơn thanh toán) chắc chắn phải tới được tận tay user trong tình huống đối tác gửi tin (SMS/Email provider) gặp gián đoạn tạm thời.
   - **Toggle Switch:** ON/OFF.
-  - **Maximum retries (Shown if ON):** Counter component with `-` [number] `+`.
-  - **Max retry window (hours) (Shown if ON):** Number input block (e.g., `24`).
+  - **Maximum retries (Chỉ hiển thị nếu bật ON):** Counter component (hộp đếm số) có phím trừ/cộng `-` [number] `+`.
+  - **Max retry window (hours) (Chỉ hiển thị nếu bật ON):** Biểu mẫu Input dạng số Number block (ví dụ: `24`).
 
-- **Footer Action:** `Save Rules` button (Black).
+- **Footer Action:** Nút Button lưu `Save Rules` (Màu Đen).
