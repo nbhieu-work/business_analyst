@@ -607,24 +607,89 @@ This establishes the business rule: Affiliate companies only exist as an attribu
 
 ## 6. Mobile Sensing Module
 
-### Data Collection
-**Title:** Store GPS Data Locally
-**As a** Mobile App,
-**I want to** cache GPS tracking data locally on the device,
-**So that** data is not lost if the network connection drops.
-**Acceptance Criteria:**
-- **Given** the app is tracking location
-- **When** a network connection is unavailable
-- **Then** the coordinates are securely stored in the local SQLite/storage.
+### Epic 1: Data Foundation (Nền tảng Dữ liệu)
 
-**Title:** Transmit GPS Data to Server
-**As a** Mobile App,
-**I want to** send stored GPS data to the server,
-**So that** the platform has real-time or near real-time tracking information.
+**Title:** Lưu trữ dữ liệu GPS nội bộ (Local Storage) khi mất mạng
+**As a** Tài xế (Driver),  
+**I want to** ứng dụng tự động lưu trữ hành trình của tôi vào bộ nhớ máy khi đi vào vùng mất sóng,  
+**So that** dữ liệu chuyến đi của tôi không bị đứt đoạn hoặc mất mát kết quả công việc do lỗi mạng.
 **Acceptance Criteria:**
-- **Given** the device has network connectivity
-- **When** local GPS data exists
-- **Then** the app uploads the data securely to the backend and clears the local cache upon success.
+- **Given** ứng dụng đang ghi nhận GPS và thiết bị bị ngắt kết nối Internet (hoặc 3G/4G)
+- **When** hệ thống thiết bị thu nhận được tọa độ GPS mới
+- **Then** ứng dụng phải lưu trữ tọa độ này (bao gồm timestamp, vĩ độ, kinh độ, độ nghiêng, tốc độ) vào cơ sở dữ liệu nội bộ trên điện thoại (SQLite) với trạng thái "Pending".
+
+**Title:** Đồng bộ hóa dữ liệu GPS lên máy chủ (Upload to server)
+**As a** Hệ thống di động (Mobile System),  
+**I want to** tự động gom nhóm (batch) và đẩy các bản ghi GPS đang lưu nội bộ lên máy chủ ngay khi có kết nối mạng,  
+**So that** tiết kiệm pin, băng thông di động của tài xế và đảm bảo dữ liệu được đồng bộ liền mạch.
+**Acceptance Criteria:**
+- **Given** thiết bị đã khôi phục kết nối mạng và tồn tại các bản ghi GPS trạng thái "Pending"
+- **When** tiến trình đồng bộ ngầm (Background Sync Worker) được kích hoạt
+- **Then** hệ thống sẽ gộp tối đa 500 bản ghi, nén lại (GZIP) và call API lên máy chủ. Sau khi nhận phản hồi thành công (HTTP 202), các bản ghi nội bộ này sẽ bị xóa khỏi điện thoại.
+
+**Title:** Tiếp nhận và lưu trữ dữ liệu GPS (Server storage)
+**As a** Hệ thống Máy chủ (Backend System),  
+**I want to** tiếp nhận, tự động lọc trùng lặp và lưu trữ vĩnh viễn các điểm GPS vào Database,  
+**So that** dữ liệu sẵn sàng để kết xuất ra các báo cáo lịch sử cá nhân cho tài xế một cách chính xác.
+**Acceptance Criteria:**
+- **Given** một API request chứa mảng dữ liệu GPS được Client gửi lên
+- **When** Backend tiếp nhận Payload
+- **Then** hệ thống sẽ bỏ qua các bản ghi trùng lặp (dựa vào cơ chế chống trùng lặp `uuid`) và insert các mốc tọa độ mới vào Database Time-series.
+
+### Epic 2: Tracking & Routing (Giám sát & Lộ trình)
+
+**Title:** Hiển thị vị trí thời gian thực (Real-time tracking)
+**As a** Tài xế (Driver),  
+**I want to** nhìn thấy vị trí hiện tại của mình đang di chuyển theo thời gian thực trên bản đồ của ứng dụng,  
+**So that** tôi biết chắc chắn rằng ứng dụng đang hoạt động bình thường và ghi nhận chính xác vị trí của tôi.
+**Acceptance Criteria:**
+- **Given** tôi đang mở màn hình Bản đồ của chuyến đi
+- **When** tôi di chuyển trên đường
+- **Then** biểu tượng (Marker) đại diện cho xe của tôi sẽ di chuyển mượt mà trên bản đồ theo đúng tọa độ GPS và hướng đi hiện hành.
+
+**Title:** Xem lại lịch sử lộ trình cá nhân (Route history)
+**As a** Tài xế (Driver),  
+**I want to** xem lại đường dây (route path) của những chuyến đi hoặc ca làm việc trước đây của chính mình,  
+**So that** tôi có thể tự đối soát lại quãng đường đã chạy và những khu vực mình đã đi qua.
+**Acceptance Criteria:**
+- **Given** tôi đang ở màn hình Lịch sử chuyến đi
+- **When** tôi chọn một ngày làm việc cụ thể trong quá khứ
+- **Then** bản đồ sẽ vẽ lại toàn bộ quỹ đạo di chuyển (Polyline) của tôi trong ngày hôm đó với điểm đầu và điểm cuối rõ ràng.
+
+**Title:** Xem lịch sử Dừng/Đỗ (Stop/parking history)
+**As a** Tài xế (Driver),  
+**I want to** xem lại danh sách các điểm mà tôi đã dừng lại và thời gian dừng tại mỗi điểm trên lộ trình,  
+**So that** tôi có thể tự kiểm tra lại thời gian nghỉ ngơi hoặc thời gian giao/nhận hàng tại từng chặng.
+**Acceptance Criteria:**
+- **Given** tôi đang xem chi tiết Lịch sử lộ trình của một ngày
+- **When** tôi bật chế độ "Hiển thị điểm dừng đỗ"
+- **Then** trên bản đồ sẽ xuất hiện các chốt (Pins) tại tọa độ mà xe không di chuyển quá 5 phút, bao gồm chi tiết (Thời gian bắt đầu đỗ, Thời gian kết thúc đỗ).
+
+### Epic 3: Driver Behavior & Safety (Hành vi & An toàn lái xe)
+
+**Title:** Nhận diện và Cảnh báo Lái xe Thiếu an toàn (Speeding, braking, acceleration)
+**As a** Tài xế (Driver),  
+**I want to** ứng dụng tự động phát hiện và tổng hợp các lần tôi chạy quá tốc độ, phanh gấp, hoặc tăng tốc đột ngột,  
+**So that** tôi có thể tự nhận thức được thói quen lái xe của mình và điều chỉnh để lái xe an toàn hơn trong tương lai.
+**Acceptance Criteria:**
+- **Given** tôi đang thực hiện chuyến đi và ứng dụng thu thập dữ liệu Sensor/GPS
+- **When** vận tốc thay đổi/tăng/giảm vượt khỏi các ngưỡng an toàn cho phép (ví dụ: đang đi 80km/h phanh gấp xuống 0km/h trong 2 giây)
+- **Then** hệ thống sẽ ghi nhận một "Sự kiện Vi phạm" và sau chuyến đi, tôi có thể xem lại tổng số lần phanh gấp/tăng tốc của mình trong báo cáo hoạt động.
+
+### Epic 4: Operation Log (Nhật ký Vận hành)
+
+**Title:** Xem Nhật ký Vận hành hằng ngày (Driving Log)
+**As a** Tài xế (Driver),  
+**I want to** xem một bảng tổng kết nhật ký di chuyển mỗi ngày (tổng số km, tổng thời gian lái xe, tổng thời gian nghỉ),  
+**So that** tôi có con số chính xác để theo dõi hiệu suất làm việc của bản thân và phục vụ cho việc tính toán thu nhập.
+**Acceptance Criteria:**
+- **Given** tôi đã hoàn thành các chuyến đi trong ngày hoặc kết thúc ca làm việc
+- **When** tôi vào tab Nhật ký (Operation Log)
+- **Then** hệ thống sẽ hiển thị một Dashboard cá nhân tổng hợp: 
+  - Tổng quãng đường (km)
+  - Tổng thời gian nổ máy di chuyển (Active hours)
+  - Tổng thời gian dừng đỗ (Idle hours)
+  - Xếp hạng/Điểm số an toàn dựa trên hành vi phanh gấp/chạy quá tốc độ.
 
 ---
 
