@@ -54,7 +54,7 @@
   - **Notification Category:** Toggle bật/tắt tuỳ chọn: `Event-driven (System)`.
     - *Purpose (Mục đích):* Phân loại luồng hoạt động. `Event-driven` để phản hồi tự động lại các thao tác của user trên app. Khi tắt dùng cho mục đích CSKH/Marketing gửi hàng loạt theo chiến dịch.
     - **Rule:** Nếu bật `Event-driven` -> Hiển thị trường **Trigger/Event Key**.
-    - **Rule:** Nếu tắt `Event-driven` -> Ẩn trường **Trigger/Event Key** (vì loại này sẽ được chạy bằng lịch hẹn (scheduling), không chạy bằng mã code).
+    - **Rule:** Nếu tắt `Event-driven` -> Ẩn trường **Trigger/Event Key** (vì loại này sẽ được chạy bằng lịch hẹn (scheduling)).
   - **Trigger/Event Key:** Dropdown (Dữ liệu được lấy qua Backend API, ví dụ: `/api/notification-triggers`). _Placeholder: "Select a trigger..."_
     - *Purpose (Mục đích):* Mã khoá kết nối giữa System Code và Hệ thống Thông báo. Khi code phía backend gọi mã này, hệ thống sẽ biết cần bốc đúng template này ra gửi.
     - **Reasoning:** Do các trigger được code cứng chìm trong logic backend, trường này BẮT BUỘC phải là dạng danh sách sổ xuống (Dropdown) để tránh Admin gõ sai chính tả (typo) và giúp Admin nhận biết được hệ thống đang hỗ trợ những event nào.
@@ -79,7 +79,7 @@
 - **Tabbed Navigation (Điều hướng qua Tab):**
   - `Template`
   - `Schedule` 
-  - `Sending Rules` 
+  - `Sending Rules` (Chỉ cần làm UI)
 
 ---
 
@@ -87,14 +87,14 @@
 **Purpose (Mục đích):** Soạn thảo và cấu hình thiết kế nội dung hiển thị của thông báo gửi tới người dùng cuối.
 
 - **Message title:** Text input. _Placeholder: "Enter message title (optional)"_
-  - *Purpose (Mục đích):* Tiêu đề chính của thông báo (Push/Email title). Có thể để trống nếu kênh gửi không yêu cầu tiêu đề (như SMS cũ).
+  - *Purpose (Mục đích):* Tiêu đề chính của thông báo. Required, trim spaces, max length 80.
 - **Message body:** Textarea. _Placeholder: "Use variables like {{username}}, {{planName}}, {{amount}}..."_ (Tối đa 1,000 ký tự).
   - *Purpose (Mục đích):* Nội dung thân của thông báo. Khuyến khích sử dụng các biến động (dynamic variables) để cá nhân hoá thông tin.
 - **Available Variables (Các biến có sẵn):** Khối hiển thị thông tin dạng read-only.
   - *Purpose (Mục đích):* Liệt kê các danh sách tag biến động mà Admin được phép dùng cho loại thông báo này (dữ liệu truyền từ Backend sang).
   - *UI Component:* Các thẻ tags (ví dụ: `{{username}} - User name`, `{{date}} - Date`) đi kèm icon Copy để Admin bấm vào sao chép nhanh vào vùng soạn thảo.
 - **Number of button:** Radio buttons (`2`, `1`, `No button`).
-  - *Purpose (Mục đích):* Cấu hình số lượng nút bấm Call-to-action (CTA) đính kèm dưới cùng của bảng thông báo (thường dùng cho Kakao Alimtalk hoặc In-app Message).
+  - *Purpose (Mục đích):* Cấu hình số lượng nút bấm Call-to-action (CTA) đính kèm dưới cùng của bảng thông báo.
 - **Button setting (Chỉ hiển thị nếu Số lượng nút > 0):** 
   - *Purpose (Mục đích):* Khối nút vật lý đại diện (ví dụ: `Button 1`, `Button 2`). Khi click vào mỗi nút sẽ mở ra một Pop-over cài đặt:
     - **Button label:** Text input (Tối đa 8 ký tự). _Placeholder: "Button label"_. Tên nút hiển thị.
