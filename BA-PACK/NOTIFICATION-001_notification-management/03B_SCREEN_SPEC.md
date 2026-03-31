@@ -6,7 +6,7 @@
 | Screen ID | Screen Name | Type | Primary Actor | Entry Points | Exit Points |
 |---|---|---|---|---|---|
 | SCR-01 | Notification Type List | List | Administrator | Admin Sidebar > Notification management | -> SCR-02, -> SCR-03 |
-| SCR-02 | Add Notification Type | Modal | Administrator | SCR-01 (Nút "+ Add Types") | -> SCR-01 |
+| SCR-02 | Add Notification Type | Side-panel / Drawer | Administrator | SCR-01 (Nút "+ Add Types") | -> SCR-01 |
 | SCR-03 | Notification Type Details | Side-panel / Drawer | Administrator | SCR-01 (Click vào dòng hoặc chữ Edit) | -> SCR-01 |
 
 ---
@@ -41,67 +41,59 @@
 
 ---
 
-### SCR-02 — Add Notification Type
-**Purpose (Mục đích):** Tạo một loại thông báo mới bao gồm các thông tin nền tảng (Tên, Mã kích hoạt, Phân loại).  
+### SCR-02 — Add Notification Type / SCR-03 — Edit Notification Type
+**Purpose (Mục đích):** Tạo mới (Add) hoặc Chỉnh sửa (Edit) một loại thông báo. Cấu trúc màn hình Tạo và Sửa dùng chung một bộ Layout chia làm 3 Tabs.
 **Primary Actor:** Quản trị viên (Admin)
+**Entry Conditions:** 
+- Tạo mới: Click nút "+ Add Types" từ màn hình danh sách (SCR-01).
+- Chỉnh sửa: Click vào tên bài hoặc một dòng thuộc bảng danh sách (SCR-01).
 
-#### A. Bố cục / Các thành phần (Chức năng)
-- **Component:** Pop-up Modal hiển thị chính giữa màn hình.
-- **Header:** Tiêu đề "Add Notification Type" + icon Đóng (X).
-- **Form Fields (Các trường nhập liệu):**
-  - **Type Name:** Text input. _Placeholder: "e.g., Payment Completed"_
-    - *Purpose (Mục đích):* Tên định danh của loại thông báo, dùng để Admin dễ dàng quản lý và tìm kiếm trên giao diện.
-  - **Notification Category:** Toggle bật/tắt tuỳ chọn: `Event-driven (System)`.
-    - *Purpose (Mục đích):* Phân loại luồng hoạt động. `Event-driven` để phản hồi tự động lại các thao tác của user trên app. Khi tắt dùng cho mục đích CSKH/Marketing gửi hàng loạt theo chiến dịch.
-    - **Rule:** Nếu bật `Event-driven` -> Hiển thị trường **Trigger/Event Key**.
-    - **Rule:** Nếu tắt `Event-driven` -> Ẩn trường **Trigger/Event Key** (vì loại này sẽ được chạy bằng lịch hẹn (scheduling)).
-  - **Trigger/Event Key:** Dropdown (Dữ liệu được lấy qua Backend API, ví dụ: `/api/notification-triggers`). _Placeholder: "Select a trigger..."_
-    - *Purpose (Mục đích):* Mã khoá kết nối giữa System Code và Hệ thống Thông báo. Khi code phía backend gọi mã này, hệ thống sẽ biết cần bốc đúng template này ra gửi.
-    - **Reasoning:** Do các trigger được code cứng chìm trong logic backend, trường này BẮT BUỘC phải là dạng danh sách sổ xuống (Dropdown) để tránh Admin gõ sai chính tả (typo) và giúp Admin nhận biết được hệ thống đang hỗ trợ những event nào.
-  - **Description:** Textarea. _Placeholder: "Brief description (optional - for internal admin)"_
-    - *Purpose (Mục đích):* Ghi chú nội bộ cho các Admin khác hiểu rõ hơn về ngữ cảnh sử dụng của loại thông báo này.
-- **Footer Buttons:** Nút `Cancel`, Nút `Create`.
-
----
-
-### SCR-03 — Notification Type Details
-**Purpose (Mục đích):** Cấu hình toàn diện cho một loại thông báo bao gồm lịch trình gửi đi, luật chống trùng lặp dữ liệu, tập đối tượng và cấu hình chi tiết (templates).  
-**Primary Actor:** Quản trị viên (Admin)
-**Entry Conditions:** Click vào một dòng trong bảng danh sách tại SCR-01.
-
-#### A. Layout (Persistent Drawer Shell)
-- **Component:** Drawer trượt ra từ bên phải màn hình.
-- **Top Bar:** Icon Đóng (X), Tiêu đề "Notification Type Details", Các nút mũi tên chuyển qua lại giữa các record (`<` `>`).
-- **Main Header Profile:**
-  - Tên loại thông báo (Ví dụ: "Change status").
-  - Status Badge: Trạng thái `ON`/`OFF` kèm dropdown để thay đổi nhanh trạng thái bật/tắt.
-  - Các nút hành động: Nút `Send Test`, Nút `Edit`.
+#### A. Layout tổng quan
+- **Component:** 
+  - (Cả SCR-02 Add và SCR-03 Edit): Đều là **Side-panel Drawer** trượt ra từ bên phải màn hình.
+- **Top Header:** Tiêu đề "Add Notification Type" hoặc "Notification Type Details" + icon Đóng (X).
+- **Trạng thái Edit (SCR-03):** Có thêm Status Badge (Bật/tắt `ON`/`OFF`), nút `Send Test`, và Footer có nút `Delete`, `Update`, `Reset`.
 - **Tabbed Navigation (Điều hướng qua Tab):**
-  - `Template`
+  - `General` (Chứa phần Info và Template)
   - `Schedule` 
   - `Sending Rules` (Chỉ cần làm UI)
 
 ---
 
-#### B. Tab: Template
-**Purpose (Mục đích):** Soạn thảo và cấu hình thiết kế nội dung hiển thị của thông báo gửi tới người dùng cuối.
+#### B. Tab: General (Chứa Info & Template)
+**Purpose (Mục đích):** Cấu hình các thông tin nền tảng, thiết lập trigger và soạn thảo nội dung hiển thị của thông báo.
 
-- **Message title:** Text input. _Placeholder: "Enter message title (optional)"_
-  - *Purpose (Mục đích):* Tiêu đề chính của thông báo. Required, trim spaces, max length 80.
-- **Message body:** Textarea. _Placeholder: "Use variables like {{username}}, {{planName}}, {{amount}}..."_ (Tối đa 1,000 ký tự).
-  - *Purpose (Mục đích):* Nội dung thân của thông báo. Khuyến khích sử dụng các biến động (dynamic variables) để cá nhân hoá thông tin.
-- **Available Variables (Các biến có sẵn):** Khối hiển thị thông tin dạng read-only.
-  - *Purpose (Mục đích):* Liệt kê các danh sách tag biến động mà Admin được phép dùng cho loại thông báo này (dữ liệu truyền từ Backend sang).
-  - *UI Component:* Các thẻ tags (ví dụ: `{{username}} - User name`, `{{date}} - Date`) đi kèm icon Copy để Admin bấm vào sao chép nhanh vào vùng soạn thảo.
+**Khối 1: NOTIFICATION INFO (Thông tin cơ bản)**
+- **Notification Type Name:** Text input. _Placeholder: "e.g., Payment Completed"_
+  - *Purpose (Mục đích):* Tên định danh của loại thông báo.
+- **Description:** Textarea. _Placeholder: "Brief description (optional - for internal admin)"_ (0 / 500 ký tự).
+  - *Purpose (Mục đích):* Ghi chú nội bộ cho nội bộ Admin hiểu rõ ngữ cảnh gửi.
+- **Event-driven:** Switch Toggle (`ON`/`OFF`). 
+  - *Purpose (Mục đích):* Nếu `ON` là thông báo hệ thống tự động bắn khi có event. Nếu `OFF` là thông báo gửi hàng loạt thủ công (Broadcast/Campaign).
+  - **Rule:** Nếu bật `ON` -> Bắt buộc chọn **Trigger/Event Key**.
+- **Trigger/Event Key:** Dropdown chọn mã trigger. _Ví dụ: "Accident Submission"_.
+  - *Purpose (Mục đích):* Khóa API map với backend.
+- **Sub-status Checkboxes (Hiển thị linh động theo Trigger):** Ví dụ như `Received`, `Under Review`, `Approved`, `Rejected`. Cho phép cấu hình gửi thông báo tại một trạng thái cụ thể của sự kiện.
+
+**Khối 2: TEMPLATE (Thiết kế nội dung)**
+- **Noti title:** Text input. _Placeholder: "Enter notification title (optional)"_
+  - *Purpose (Mục đích):* Tiêu đề chính của thông báo (Required, trim spaces, max length 80).
+- **Noti body:** Textarea. _Placeholder: "Use '/' for variable suggestion"_ (0 / 1,000 ký tự).
+  - *Purpose (Mục đích):* Nội dung thân của thông báo. Khuyến khích sử dụng các biến động (dynamic variables).
+- **Available Variables (Các biến có sẵn):** Khối hiển thị thông tin dạng read-only. Các thẻ tags (ví dụ: `{{username}} - User name`, `{{date}} - Date`) đi kèm icon Copy.
 - **Number of button:** Radio buttons (`2`, `1`, `No button`).
-  - *Purpose (Mục đích):* Cấu hình số lượng nút bấm Call-to-action (CTA) đính kèm dưới cùng của bảng thông báo.
-- **Button setting (Chỉ hiển thị nếu Số lượng nút > 0):** 
-  - *Purpose (Mục đích):* Khối nút vật lý đại diện (ví dụ: `Button 1`, `Button 2`). Khi click vào mỗi nút sẽ mở ra một Pop-over cài đặt:
-    - **Button label:** Text input (Tối đa 8 ký tự). _Placeholder: "Button label"_. Tên nút hiển thị.
-    - **Type:** Radio buttons (`Web link`, `App deep link`). Phân loại hành động khi user ấn nút.
-    - **URL / Deep link:** Text input. _Placeholder: "Input Link"_. Link đích điều hướng user.
-    - **Pop-over Footer:** `Cancel`, `Apply`.
-- **Footer Action:** Nút `Reset` để huỷ thay đổi, và Nút `Save template` để lưu lại.
+  - *Purpose (Mục đích):* Cấu hình số lượng hộp thoại Call-to-action (CTA).
+- **Button setting (Chỉ hiển thị nếu Số lượng nút > 0):** Khối nút vật lý đại diện (ví dụ: `Button 1`, `Button 2`). Khi click vào mỗi nút sẽ mở ra một Pop-over cài đặt:
+  - **Button label:** Text input (Tối đa 8 ký tự).
+  - **Type:** Radio buttons (`Web link`, `App deep link`).
+  - **URL / Deep link:** Text input.
+  - **Pop-over Footer:** `Cancel`, `Apply`.
+
+**Footer của Tab General:**
+- **Add Mode:** Nút `Cancel`, Nút `Save`.
+- **Edit Mode:** Nút `Delete` (Mở modal xác nhận xoá), Nút `Reset` (Mặc định disable), Nút `Update` (Chỉ enable khi nội dung bị thay đổi).
+
+---
 
 ---
 
@@ -118,10 +110,11 @@
 - **Nếu chọn `Recurring schedule`:**
   - **Frequency:** Radio buttons (`Daily`, `Weekly`, `Monthly`).
   - **Send time:** Input nhập khung giờ (HH:MM).
-  - **Days of week:** Dropdown hỗ trợ lấy nhiều giá trị (multi-select) (ví dụ: "Custom selection") bên dưới là các nút Toggles cho từng ngày (`Mon`, `Tue` (ẩn đi), `Wed`, v.v.) để tuỳ chỉnh quy luật lặp lại.
+  - **Days of week:** Dropdown lấy nhiều giá trị. Có 3 options nhanh trong dropdown popover: `All days (7 days/week)`, `Weekdays only (Mon-Fri)`, `Custom selection`.
+    - *UI Logic Note:* Các tuỳ chọn trong Dropdown và bảng Toggle Mon->Sun bên dưới liên kết chặt chẽ (2 chiều). Nếu Admin click chọn Mon-Fri ở dưới, tuỳ chọn trên dropdown tự "update tương ứng" thành Weekdays only.
   - **Start date:** Công cụ Date picker.
   - **End date (optional):** Công cụ Date picker.
-- **Footer Action:** Nút `Schedule Notification`.
+- **Footer Action:** Nút `Schedule Notification` (hoặc `Update`).
 
 ---
 
@@ -154,4 +147,29 @@
   - **Maximum retries (Chỉ hiển thị nếu bật ON):** Counter component (hộp đếm số) có phím trừ/cộng `-` [number] `+`.
   - **Max retry window (hours) (Chỉ hiển thị nếu bật ON):** Biểu mẫu Input dạng số Number block (ví dụ: `24`).
 
-- **Footer Action:** Nút Button lưu `Save Rules`.
+- **Footer Action:** Nút Button lưu chạy đồng bộ Save (`Save Rules` hoặc `Update`).
+
+---
+
+### SCR-04 — Send Test Popup
+**Purpose (Mục đích):** Gửi thử một thông báo đến thiết bị để kiểm tra hiển thị thực tế của Template trước khi áp dụng cho người dùng cuối. 
+**Primary Actor:** Quản trị viên (Admin)
+**Entry Conditions:** Click nút `Send Test` góc phải trên màn hình SCR-02 hoặc SCR-03.
+
+#### A. Bố cục / Các thành phần
+- **Component:** Pop-up Modal hiển thị chính giữa.
+- **Header:** Tiêu đề "Send Test" + icon Đóng (X).
+- **Form Fields (Các trường tương tác):**
+  - **Phone number / Email:** Text input. Nơi chỉ định account nhận test.
+    - *Hint text:* "If entering multiple items, separate them with a comma (,)". Cho phép gửi test tới nhiều người cùng lúc.
+  - **Checkbox "Use current draft (not published)":** Checkbox kiểm chọn.
+    - *Purpose:* Nếu bấm chọn, hệ thống sẽ gửi đi nội dung admin VỪA GÕ trên tab General (thậm chí chưa bấm Update).
+    - *Hint text:* "If not checked, the system will send according to the saved template" (Nếu không check, hệ thống sẽ lấy template đã lưu database ra gửi).
+- **Footer Action:** Nút `Cancel`, Nút `Send` (Primary Black).
+
+---
+
+### Màn hình xác nhận Delete popup
+- Bật lên khi Admin ấn nút `Delete` đỏ ở dưới cùng tab General (chế độ Edit).
+- Hiển thị cảnh báo: tên (Notification Type), trigger và câu hỏi "Are you sure you want to delete this notification type? This action cannot be undone."
+- Các nút: `Cancel` và `Delete`.
