@@ -160,12 +160,12 @@
 - **Component:** Pop-up Modal hiển thị chính giữa.
 - **Header:** Tiêu đề "Send Test" + icon Đóng (X).
 - **Form Fields (Các trường tương tác):**
-  - **Phone number / Email:** Text input. Nơi chỉ định account nhận test.
+  - **AccountID:** Text input. Nơi chỉ định account nhận test.
     - *Hint text:* "If entering multiple items, separate them with a comma (,)". Cho phép gửi test tới nhiều người cùng lúc.
   - **Checkbox "Use current draft (not published)":** Checkbox kiểm chọn.
     - *Purpose:* Nếu bấm chọn, hệ thống sẽ gửi đi nội dung admin VỪA GÕ trên tab General (thậm chí chưa bấm Update).
     - *Hint text:* "If not checked, the system will send according to the saved template" (Nếu không check, hệ thống sẽ lấy template đã lưu database ra gửi).
-- **Footer Action:** Nút `Cancel`, Nút `Send` (Primary Black).
+- **Footer Action:** Nút `Cancel`, Nút `Send`.
 
 ---
 
