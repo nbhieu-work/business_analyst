@@ -38,7 +38,7 @@
 
 #### C. Quy tắc Backend & Notification
 - **Trigger:** Hiện tại chỉ hỗ trợ trigger từ logic **Accident Report**. 
-- **Content:** Toàn bộ nội dung Title và Body của thông báo được hiển thị trên In-app Notification sẽ lấy trực tiếp từ các cấu hình **Template** (SCR-03) của module QUẢN LÝ THÔNG BÁO phía Admin.
+- **Content:** Toàn bộ nội dung Title và Body của thông báo được hiển thị trên In-app Notification sẽ lấy trực tiếp từ các cấu hình của module QUẢN LÝ THÔNG BÁO phía Admin.
 - **Auto-Update:** Đảm bảo tính Real-time trên app.
 
 ---
