@@ -22,7 +22,7 @@
 #### A. Bố cục / Các thành phần
 - **Header:** Tiêu đề "Plan" kèm badge hiển thị tổng số gói (ví dụ: `5`).
 - **Toolbar:** 
-  - Nút `+ 계획 만들기` (Tạo gói mới - Màu đen).
+  - Nút `+ 계획 만들기` (Tạo gói mới).
   - Checkbox lọc trạng thái `Plan Status`: [x] `Active`, [x] `Inactive`.
 - **Content Area (Grid View):** Các gói được nhóm theo **Loại gói (Plan Type)**.
   - Ví dụ nhóm: "안전한 배송 계획" (Gói giao hàng an toàn), "일반 책임 보험 계획" (Gói bảo hiểm trách nhiệm chung).
@@ -40,7 +40,7 @@
 **Mục đích:** Xem và chỉnh sửa thông tin chi tiết của một gói bảo hiểm, cấu hình giá và công ty bảo hiểm liên kết.
   
 #### A. Thông tin chung (GENERAL)
-- **Top Bar Actions (Edit mode):** Nút `Delete` (Đỏ), `Reset`, `Update` (Primary Black).
+- **Top Bar Actions (Edit mode):** Nút `Delete` (Đỏ), `Reset`, `Update`.
 - **Banner Image:** Vùng upload/hiển thị ảnh đại diện cho gói bảo hiểm (Tỷ lệ 3:4, tối đa 150MB).
 - **Trạng thái:** Badge status kèm dropdown thay đổi `Active`/`Inactive`.
 - **Các trường dữ liệu:**
