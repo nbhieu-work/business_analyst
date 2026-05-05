@@ -30,6 +30,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.1 [ADMIN] Quản lý Thông báo (Notification Management)
 
+**Vấn đề giải quyết:** Khi trạng thái hồ sơ tai nạn của Driver thay đổi (approved/rejected), Driver không biết ngay lập tức vì không có cơ chế thông báo tự động. Ngoài ra, Admin cũng cần gửi thông báo hàng loạt đến người dùng khi có thông tin quan trọng. Module này giải quyết cả hai nhu cầu: thông báo tự động theo sự kiện (event-driven) và thông báo thủ công theo lô (broadcast), đều dựa trên template cấu hình sẵn.
+
 **Mục tiêu:** Cho phép Admin cấu hình, lên lịch và quản lý toàn bộ vòng đời của các loại thông báo gửi đến người dùng.
 
 **Yêu cầu chức năng:**
@@ -54,6 +56,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.2 [ADMIN] Quản lý Công ty Liên kết (Affiliated Company Management)
 
+**Vấn đề giải quyết:** Nền tảng phục vụ nhiều doanh nghiệp đối tác khác nhau (logistics, giao hàng...). Mỗi Driver phải thuộc về một công ty cụ thể — đây là thông tin bắt buộc để xác định nhóm bảo hiểm và phân quyền hợp đồng. Module này cho phép Admin duy trì danh mục công ty liên kết, đảm bảo dữ liệu lịch sử không bị mất khi công ty ngừng hợp tác (chỉ Inactive, không xóa).
+
 **Mục tiêu:** Quản lý danh mục các đối tác doanh nghiệp liên kết với nền tảng.
 
 **Yêu cầu chức năng:**
@@ -73,6 +77,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 ---
 
 ### 2.3 [ADMIN] Quản lý Tai nạn (Accident Management)
+
+**Vấn đề giải quyết:** Driver báo cáo tai nạn qua Mobile App, tạo ra hàng trăm hồ sơ cần được theo dõi và cập nhật kết quả từ công ty bảo hiểm. Kết quả xử lý (approved/rejected, số tiền bồi thường...) thường đến dưới dạng file Excel từ bên bảo hiểm, nên cần cơ chế import hàng loạt thay vì cập nhật thủ công từng hồ sơ. Module này là trung tâm tiếp nhận và phản hồi toàn bộ vòng đời của một hồ sơ tai nạn.
 
 **Mục tiêu:** Quản lý và cập nhật kết quả xử lý các hồ sơ báo cáo tai nạn từ phía người dùng.
 
@@ -98,6 +104,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.4 [ADMIN] Quản lý Gói Bảo hiểm (Plan Management)
 
+**Vấn đề giải quyết:** Nền tảng cung cấp nhiều loại gói bảo hiểm khác nhau (tai nạn lái xe, trách nhiệm dân sự...) từ nhiều công ty bảo hiểm. Giá và quyền lợi thay đổi theo thời gian và cần được phản ánh ngay trên Mobile App mà không cần cập nhật code. Module này cho phép Admin quản lý toàn bộ catalog gói BH, cập nhật giá với audit log đầy đủ và khả năng rollback, đảm bảo Mobile App luôn hiển thị thông tin chính xác nhất.
+
 **Mục tiêu:** Tạo và quản lý các gói bảo hiểm, bao gồm cấu hình giá, quyền lợi và công ty bảo hiểm.
 
 **Yêu cầu chức năng:**
@@ -119,6 +127,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 ---
 
 ### 2.5 [ADMIN] Quản lý Thành viên (Member Management)
+
+**Vấn đề giải quyết:** Admin không có công cụ tập trung để tra cứu và hỗ trợ tài khoản Driver khi có vấn đề (sai thông tin, cần khóa tài khoản, kiểm tra hợp đồng hiện tại...). Việc xem lịch sử chấp thuận điều khoản của mỗi Driver cũng cần thiết cho compliance. Module này cung cấp cho Admin một giao diện quản lý toàn diện: tìm kiếm nhanh, xem profile đầy đủ, chỉnh sửa thông tin và kiểm tra liên kết hợp đồng bảo hiểm.
 
 **Mục tiêu:** Cung cấp công cụ để Admin xem, tìm kiếm, quản lý trạng thái và chỉnh sửa thông tin toàn bộ tài khoản thành viên trên nền tảng.
 
@@ -148,6 +158,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.6 [ADMIN] Quản lý Chứng chỉ Bảo hiểm (Certificate Management)
 
+**Vấn đề giải quyết:** Khi một công ty đối tác ký hợp đồng bảo hiểm tập thể cho hàng trăm tài xế, việc ghi danh từng người bằng tay là không khả thi. Certificate là tài liệu pháp lý chứng minh nhóm người dùng được bảo hiểm. Module này cho phép Admin tạo Certificate, upload danh sách Driver theo lô qua Excel (hệ thống tự động tạo tài khoản nếu chưa có), gắn file PDF chính thức và quản lý lịch sử gia hạn.
+
 **Mục tiêu:** Quản lý toàn bộ vòng đời của các chứng chỉ bảo hiểm, bao gồm tạo mới, upload danh sách người dùng hàng loạt, gắn file PDF và theo dõi lịch sử gia hạn.
 
 **Yêu cầu chức năng:**
@@ -172,6 +184,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 ---
 
 ### 2.6 [ADMIN] Quản lý Đăng ký Gói (Plan Subscription)
+
+**Vấn đề giải quyết:** Sau khi Certificate được tạo và Driver được ghi danh, cần liên kết từng đơn đăng ký với số Certificate cụ thể. Bên cạnh đó, thực tế vận hành phát sinh nhiều thay đổi hàng loạt: Driver đổi xe, Driver nghỉ việc. Module này xử lý 3 tình huống đó: gán Certificate, cập nhật biển số xe hàng loạt, và offboard hàng loạt — tất cả đều qua Excel với cơ chế validate chặt chẽ.
 
 **Mục tiêu:** Quản lý danh sách người dùng đã đăng ký gói bảo hiểm, bao gồm gán chứng chỉ và xử lý các thay đổi hàng loạt.
 
@@ -212,6 +226,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.8 [ADMIN] Quản lý Điều khoản (Terms & Conditions Management)
 
+**Vấn đề giải quyết:** Khi nền tảng cập nhật chính sách bảo hiểm hoặc điều kiện sử dụng, cần đảm bảo toàn bộ Driver đã đọc và chấp thuận phiên bản mới trước khi tiếp tục dùng app (compliance và pháp lý). Module này quản lý toàn bộ vòng đời điều khoản: soạn thảo, lên lịch xuất bản, theo dõi ai đã đồng ý và ai chưa.
+
 **Mục tiêu:** Quản lý vòng đời các phiên bản điều khoản, lên lịch xuất bản và theo dõi lượt đồng ý.
 
 **Yêu cầu chức năng:**
@@ -231,6 +247,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.9 [MOBILE APP] Trang chủ & Điều khoản (Home & T&C)
 
+**Vấn đề giải quyết:** Sau khi đăng nhập, Driver cần được thông báo ngay nếu có phiên bản điều khoản mới (luật pháp yêu cầu). Trang chủ cũng cần hiển thị đúng thông tin theo ngữ cảnh: Driver đang có gói BH hay chưa, có hồ sơ tai nạn đang xử lý không... Màn hình này là điểm vào đầu tiên sau login và phải mịnh mạng, chính xác theo trạng thái của từng Driver.
+
 **Yêu cầu chức năng:**
 
 | ID | Yêu cầu | Mức độ ưu tiên |
@@ -243,6 +261,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 ---
 
 ### 2.10 [MOBILE APP] Danh sách & Chi tiết Gói Bảo hiểm (Plan List & Detail)
+
+**Vấn đề giải quyết:** Driver cần biết họ đang được bảo hiểm những gì, mức quyền lợi cụ thể, và có thể xem/đăng ký thêm gói nếu muốn. Thông tin giá và quyền lợi phải luôn khớp với cấu hình Admin thực tế, không được hardcode. Màn hình này là cầu nối giữa catalog Admin quản lý và trải nghiệm người dùng cuối.
 
 **Yêu cầu chức năng:**
 
@@ -258,6 +278,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 
 ### 2.11 [MOBILE APP] Danh sách Thông báo (Notification List)
 
+**Vấn đề giải quyết:** Sau khi Admin cập nhật trạng thái hồ sơ tai nạn, Driver cần được thông báo kịp thời và có thể xem chi tiết ngay từ thông báo (deep link). Danh sách thông báo giúp Driver theo dõi toàn bộ lịch sử liên lạc từ nền tảng và thực hiện các thao tác nhanh (mark read, delete).
+
 **Yêu cầu chức năng:**
 
 | ID | Yêu cầu | Mức độ ưu tiên |
@@ -271,6 +293,8 @@ Xây dựng một nền tảng bảo hiểm tích hợp (Insurance App) phục v
 ---
 
 ### 2.12 [MOBILE APP] Trang cá nhân (My Page / Profile)
+
+**Vấn đề giải quyết:** Driver cần một nơi trung tâm để quản lý thông tin cá nhân, đổi mật khẩu, xem lịch sử hoạt động (xe, hợp đồng, báo cáo tai nạn) và kiểm tra các điều khoản đã đồng ý. Module này cũng xử lý tình huống Driver muốn rờ khỏi nền tảng (withdraw account) với đầy đủ cảnh báo về hậu quả (hủy hợp đồng, hoàn tiền).
 
 **Mục tiêu:** Cung cấp trung tâm quản lý thông tin cá nhân, tài khoản và các liên kết nhanh đến lịch sử hoạt động.
 
